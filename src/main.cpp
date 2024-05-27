@@ -101,9 +101,8 @@ int main(int argc, char *argv[]) {
         programmer_found = true;
     }
 
-
     if (programmer_found) {
-        device_View->setPlainText(run_process(*status_text, "-d " + temp_device_name));
+        run_process(*status_text, "-d " + temp_device_name);
         device_View->setPlainText(run_process(*status_text, "--list", "stdout"));
     }
 

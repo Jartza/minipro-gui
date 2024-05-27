@@ -21,7 +21,7 @@ include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 #set(CONAN_SYSREQUIRES_MODE "enabled")
 conan_cmake_configure(REQUIRES
-#        qt/6.6.3
+#        qt/6.7.1
         BASIC_SETUP CMAKE_TARGETS
         GENERATORS CMakeToolchain CMakeDeps)
 conan_cmake_autodetect(settings)
