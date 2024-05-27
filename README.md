@@ -2,7 +2,7 @@
 
 `git clone https://github.com/twelve-chairs/minipro-gui.git`
 
-`cd mini-pro`
+`cd minipro-gui`
 
 #### MacOS
 
