@@ -17,18 +17,15 @@ if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
             TLS_VERIFY ON)
 endif()
 
-include(${CMAKE_BINARY_DIR}/conan.cmake)
-
-#set(CONAN_SYSREQUIRES_MODE "enabled")
-conan_cmake_configure(REQUIRES
-#        qt/6.7.1
-#        BASIC_SETUP CMAKE_TARGETS
-        GENERATORS CMakeToolchain CMakeDeps)
-conan_cmake_autodetect(settings)
-conan_cmake_install(PATH_OR_REFERENCE .
-        BUILD missing
-        REMOTE conancenter
-        SETTINGS ${settings})
+#include(${CMAKE_BINARY_DIR}/conan.cmake)
+#
+#conan_cmake_configure(REQUIRES
+#        GENERATORS CMakeToolchain CMakeDeps)
+#conan_cmake_autodetect(settings)
+#conan_cmake_install(PATH_OR_REFERENCE .
+#        BUILD missing
+#        REMOTE conancenter
+#        SETTINGS ${settings})
 ########################################################################################################################
 
 set(CMAKE_AUTOMOC ON)
