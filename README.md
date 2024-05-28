@@ -9,14 +9,19 @@
 
 #### MacOS
 
-`brew install minipro qt6`
+`brew install cmake qt6 minipro`
 
 `cmake -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B "./cmake-build-minsizerel"`
 
 `cmake --build ./cmake-build-minsizerel --target minipro-gui -- -j 2`
 
 `./cmake-build-minsizerel/minipro-gui`
+
 #### Ubuntu
-TBD
-#### Fedora
-TBD
+`sudo apt-get install build-essential git cmake qt6-default minipro`
+
+`cmake -DCMAKE_BUILD_TYPE=MinSizeRel -G "CodeBlocks - Unix Makefiles" . -B "./cmake-build-minsizerel"`
+
+`cmake --build ./cmake-build-minsizerel --target minipro-gui -- -j 2`
+
+`./cmake-build-minsizerel/minipro-gui`
