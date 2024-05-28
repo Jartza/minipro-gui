@@ -9,25 +9,6 @@ project(${PROJECT_NAME} LANGUAGES C CXX)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
-#### Set up Conan and build dependencies #### https://github.com/conan-io/cmake-conan ##################################
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/0.18.1/conan.cmake"
-            "${CMAKE_BINARY_DIR}/conan.cmake"
-            TLS_VERIFY ON)
-endif()
-
-#include(${CMAKE_BINARY_DIR}/conan.cmake)
-#
-#conan_cmake_configure(REQUIRES
-#        GENERATORS CMakeToolchain CMakeDeps)
-#conan_cmake_autodetect(settings)
-#conan_cmake_install(PATH_OR_REFERENCE .
-#        BUILD missing
-#        REMOTE conancenter
-#        SETTINGS ${settings})
-########################################################################################################################
-
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
@@ -50,13 +31,9 @@ if (APPLE)
     set_source_files_properties(${app_icon_macos} PROPERTIES
             MACOSX_PACKAGE_LOCATION "Resources")
     add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${CPP_FILES} ${H_FILES} ${INCLUDE} ${app_icon_macos})
-
-endif()
-
-#if(LINUX)
+else ()
     add_executable(${PROJECT_NAME} ${CPP_FILES} ${H_FILES} ${INCLUDE})
-#endif()
-
+endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt::Core
         Qt::Gui
