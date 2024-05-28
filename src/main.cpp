@@ -15,7 +15,6 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationName("minipro-gui");
 
     MainWindow window;
-    window.setWindowIcon(QIcon(":/res/AppIcon.png"));
-    window.show();
+
     return QApplication::exec();
 }

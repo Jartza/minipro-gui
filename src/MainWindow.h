@@ -12,6 +12,7 @@
 
 
 class MainWindow : public QMainWindow {
+Q_OBJECT
 public:
     bool minipro_found;
     bool programmer_found;
@@ -26,6 +27,11 @@ public:
     static QString run_process(QPlainTextEdit&, const QString&, const QString&);
     explicit MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow();
+
+private slots:
+    void check_for_programmer();
+    void select_device();
+    void update_firmware();
 
 private:
     QWidget *window;
@@ -48,9 +54,7 @@ private:
 
     void initializer();
     void check_for_minipro();
-    void check_for_programmer();
-    void select_device();
-    void update_firmware();
+
 };
 
 

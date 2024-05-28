@@ -41,7 +41,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     layout->addWidget(targets_label, 0, 0);
     layout->addWidget(button_programmer, 1, 0);
+    connect(button_programmer, SIGNAL (released()),this, SLOT (check_for_programmer()));
     layout->addWidget(button_device, 2, 0);
+    connect(button_device, SIGNAL (released()),this, SLOT (select_device()));
+
 
     layout->addWidget(actions_label, 3, 0);
     layout->addWidget(button_blank, 4, 0);
@@ -57,10 +60,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     layout->addWidget(status_view_label, 9, 0);
     layout->addWidget(status_view, 10, 0, 1, 0);
 
-    check_for_minipro();
-    check_for_programmer();
+    device_view->setReadOnly(true);
+    hex_view->setReadOnly(true);
+    status_view->setReadOnly(true);
+
+    window->setWindowIcon(QIcon(":/res/AppIcon.png"));
 
     window->show();
+
+    check_for_minipro();
+    check_for_programmer();
 }
 
 MainWindow::~MainWindow() {

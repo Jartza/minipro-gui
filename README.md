@@ -29,3 +29,8 @@ Install minipro: https://gitlab.com/DavidGriffith/minipro#install-build-dependen
 `./cmake-build-minsizerel/minipro-gui`
 
 #### Fedora (TBD)
+Install minipro: https://gitlab.com/DavidGriffith/minipro#install-build-dependencies
+
+`sudo dnf groupinstall "C Development Tools and Libraries"`
+
+`sudo dnf install mesa-libGL-devel`
