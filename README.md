@@ -1,4 +1,4 @@
-![minipro.jpg](res%2Fminipro.jpg)
+![minipro.jpg](res%2FAppIcon.ico)
 ### Very-much experimental GUI wrapper for the awesome [minipro](https://gitlab.com/DavidGriffith/minipro) CLI tool
 
 `git clone https://github.com/twelve-chairs/minipro-gui.git`

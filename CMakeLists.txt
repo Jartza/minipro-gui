@@ -41,6 +41,8 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
+set(RESOURCE_FILES ${PROJECT_NAME}.qrc)
+
 file(GLOB H_FILES "src/*.h")
 file(GLOB CPP_FILES "src/*.cpp")
 file(GLOB INCLUDE "src/include/*.*")
