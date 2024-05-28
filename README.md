@@ -17,7 +17,7 @@
 
 `./cmake-build-minsizerel/minipro-gui`
 
-#### Ubuntu
+#### Ubuntu (untested)
 `sudo apt-get install build-essential git cmake qt6-default minipro`
 
 `cmake -DCMAKE_BUILD_TYPE=MinSizeRel -G "CodeBlocks - Unix Makefiles" . -B "./cmake-build-minsizerel"`
@@ -25,3 +25,5 @@
 `cmake --build ./cmake-build-minsizerel --target minipro-gui -- -j 2`
 
 `./cmake-build-minsizerel/minipro-gui`
+
+#### Fedora (TBD)
