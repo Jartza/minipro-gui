@@ -1,8 +1,10 @@
 #include <QApplication>
-#include "Devices.h"
 #include "MainWindow.h"
 #include "Programmers.h"
+#include "Devices.h"
+#include "Read.h"
 #include "Write.h"
+#include "Firmware.h"
 
 
 int main(int argc, char *argv[]) {
