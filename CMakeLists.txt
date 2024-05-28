@@ -22,7 +22,7 @@ include(${CMAKE_BINARY_DIR}/conan.cmake)
 #set(CONAN_SYSREQUIRES_MODE "enabled")
 conan_cmake_configure(REQUIRES
 #        qt/6.7.1
-        BASIC_SETUP CMAKE_TARGETS
+#        BASIC_SETUP CMAKE_TARGETS
         GENERATORS CMakeToolchain CMakeDeps)
 conan_cmake_autodetect(settings)
 conan_cmake_install(PATH_OR_REFERENCE .
@@ -30,6 +30,10 @@ conan_cmake_install(PATH_OR_REFERENCE .
         REMOTE conancenter
         SETTINGS ${settings})
 ########################################################################################################################
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
 find_package(Qt6 COMPONENTS
         Core
@@ -41,7 +45,7 @@ file(GLOB H_FILES "src/*.h")
 file(GLOB CPP_FILES "src/*.cpp")
 file(GLOB INCLUDE "src/include/*.*")
 
-add_executable(${PROJECT_NAME} ${H_FILES} ${CPP_FILES} ${INCLUDE})
+add_executable(${PROJECT_NAME} ${CPP_FILES} ${H_FILES} ${INCLUDE})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt::Core
         Qt::Gui
