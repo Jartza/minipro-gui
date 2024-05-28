@@ -9,12 +9,13 @@
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
+    QGuiApplication::setWindowIcon(QIcon(":/res/AppIcon.ico"));
     QCoreApplication::setOrganizationName("Twelve Chairs");
     QCoreApplication::setOrganizationDomain("twelve-chairs");
     QCoreApplication::setApplicationName("minipro-gui");
 
     MainWindow window;
-
+    window.setWindowIcon(QIcon(":/res/AppIcon.png"));
     window.show();
     return QApplication::exec();
 }
