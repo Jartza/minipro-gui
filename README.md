@@ -18,9 +18,7 @@
 `./cmake-build-minsizerel/minipro-gui`
 
 #### Ubuntu (untested)
-`sudo apt-get install build-essential git python3-pip cmake qt6-base-dev`
-
-`sudo pip install conan`
+`sudo apt-get install build-essential git libgl1-mesa-dev cmake qt6-base-dev`
 
 `cmake -DCMAKE_BUILD_TYPE=MinSizeRel -G "CodeBlocks - Unix Makefiles" . -B "./cmake-build-minsizerel"`
 

@@ -53,9 +53,9 @@ if (APPLE)
 
 endif()
 
-if(LINUX)
+#if(LINUX)
     add_executable(${PROJECT_NAME} ${CPP_FILES} ${H_FILES} ${INCLUDE})
-endif()
+#endif()
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt::Core
