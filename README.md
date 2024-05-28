@@ -13,6 +13,8 @@
 
 `cmake -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B "./cmake-build-minsizerel"`
 
+`cmake --build ./cmake-build-minsizerel --target minipro-gui -- -j 2`
+
 `./cmake-build-minsizerel/minipro-gui`
 #### Ubuntu
 TBD
