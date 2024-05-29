@@ -110,9 +110,8 @@ QString MainWindow::run_process(QPlainTextEdit &status_text, const QStringList &
 void MainWindow::check_for_minipro(){
     QStringList arguments;
     arguments << "--version";
-    QString initial_check_error = run_process(*status_view, arguments, "stdout");
-    if (initial_check_error.length() > 0) {
-        if (initial_check_error.contains("minipro version")) {
+    QString initial_check_error = run_process(*status_view, arguments);
+    if (initial_check_error.length() > 0 && initial_check_error.contains("minipro version")) {
             QRegularExpression re("minipro version.*\\n");
             QRegularExpressionMatch match = re.match(initial_check_error);
             if (match.hasMatch()) {
@@ -123,7 +122,6 @@ void MainWindow::check_for_minipro(){
             else {
                 button_programmer->setDisabled(true);
             }
-        }
     }
 }
 
