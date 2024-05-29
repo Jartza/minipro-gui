@@ -169,6 +169,7 @@ void MainWindow::select_device(){
 }
 
 void MainWindow::check_blank(){
+    read_device();
     QStringList arguments;
     arguments << "-p" << device << "-b";
     run_process(*status_view, arguments);
