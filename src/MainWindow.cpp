@@ -87,7 +87,7 @@ QString MainWindow::run_process(QPlainTextEdit &status_text, const QStringList &
         command_options += each + " ";
     }
     status_text.appendPlainText("[Input]: minipro " + command_options);
-    minipro.start("minipro", arguments);
+    minipro.start("minipro2", arguments);
     QString output = "";
     if (!minipro.waitForStarted()) {
         output += "Start Error";
@@ -158,6 +158,7 @@ void MainWindow::get_devices(){
     arguments << "-l";
     run_process(*device_view, arguments, "stdout");
 }
+
 void MainWindow::select_device(){
     device = "M2732@DIP24";
     button_device->setText(device);
