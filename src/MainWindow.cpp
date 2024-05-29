@@ -188,7 +188,9 @@ void MainWindow::write_device(){
 }
 
 void MainWindow::erase_device(){
-
+    QStringList arguments;
+    arguments << "-p" << device << "-E";
+    run_process(*status_view, arguments);
 }
 
 void MainWindow::update_firmware(){
