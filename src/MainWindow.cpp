@@ -87,7 +87,7 @@ QString MainWindow::run_process(QPlainTextEdit &status_text, const QStringList &
         command_options += each + " ";
     }
     status_text.appendPlainText("[Input]: minipro " + command_options);
-    minipro.start("minipro2", arguments);
+    minipro.start("minipro", arguments);
     QString output = "";
     if (!minipro.waitForStarted()) {
         output += "Start Error";
@@ -115,7 +115,7 @@ void MainWindow::check_for_minipro(){
             QRegularExpression re("minipro version.*\\n");
             QRegularExpressionMatch match = re.match(initial_check_error);
             if (match.hasMatch()) {
-                window->setWindowTitle(match.captured(0));
+                window->setWindowTitle(match.captured(0).trimmed());
                 minipro_found = true;
                 button_programmer->setDisabled(false);
             }
