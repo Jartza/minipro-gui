@@ -9,6 +9,9 @@
 #include <QGridLayout>
 #include <QRegularExpression>
 #include <QDialog>
+#include <iostream>
+#include <QtDebug>
+#include <QFile>
 
 
 class MainWindow : public QMainWindow {
@@ -17,6 +20,9 @@ public:
     bool minipro_found;
     bool programmer_found;
 
+    QString programmer;
+    QString device;
+
     QPushButton *button_programmer;
     QPushButton *button_device;
 
@@ -24,13 +30,18 @@ public:
     QPlainTextEdit *device_view;
     QPlainTextEdit *hex_view;
 
-    static QString run_process(QPlainTextEdit&, const QString&, const QString&);
+    static QString run_process(QPlainTextEdit&, const QStringList&, const QString&);
     explicit MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow();
 
 private slots:
     void check_for_programmer();
+    void get_devices();
     void select_device();
+    void check_blank();
+    void read_device();
+    void write_device();
+    void erase_device();
     void update_firmware();
 
 private:
