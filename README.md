@@ -30,9 +30,15 @@ Install minipro: https://gitlab.com/DavidGriffith/minipro#install-build-dependen
 
 *If your OS uses Wayland (e.g. Raspberry PI5), please also install `qt6-wayland` via apt-get*
 
-#### Fedora (TBD)
+#### Fedora
 Install minipro: https://gitlab.com/DavidGriffith/minipro#install-build-dependencies
 
 `sudo dnf groupinstall "C Development Tools and Libraries"`
 
-`sudo dnf install mesa-libGL-devel`
+`sudo dnf install cmake mesa-libGL-devel qt6-qtbase-devel`
+
+`cmake -DCMAKE_BUILD_TYPE=MinSizeRel -G "CodeBlocks - Unix Makefiles" . -B "./cmake-build-minsizerel"`
+
+`cmake --build ./cmake-build-minsizerel --target minipro-gui -- -j 2`
+
+`./cmake-build-minsizerel/minipro-gui`
