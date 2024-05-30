@@ -2,7 +2,7 @@
 ### Very-much experimental GUI wrapper for the awesome [minipro](https://gitlab.com/DavidGriffith/minipro) CLI tool
 *(Not affiliated with MiniPRO devices or manufacturers, nor with the minipro CLI project.)*
 
-![Screenshot 2024-05-28 at 09.18.19.png](res%2Fscreenshot.png)
+![screenshot.png](res%2Fscreenshot.png)
 `git clone https://github.com/twelve-chairs/minipro-gui.git`
 
 `cd minipro-gui`
@@ -20,7 +20,7 @@
 #### Ubuntu
 Install minipro: https://gitlab.com/DavidGriffith/minipro#install-build-dependencies
 
-`sudo apt-get install build-essential libgl1-mesa-dev cmake qt6-base-dev`
+`sudo apt-get install build-essential libgl1-mesa-dev cmake qt6-base-dev -y`
 
 `cmake -DCMAKE_BUILD_TYPE=MinSizeRel -G "CodeBlocks - Unix Makefiles" . -B "./cmake-build-minsizerel"`
 
@@ -35,7 +35,7 @@ Install minipro: https://gitlab.com/DavidGriffith/minipro#install-build-dependen
 
 `sudo dnf groupinstall "C Development Tools and Libraries"`
 
-`sudo dnf install cmake mesa-libGL-devel qt6-qtbase-devel`
+`sudo dnf install cmake mesa-libGL-devel qt6-qtbase-devel -y`
 
 `cmake -DCMAKE_BUILD_TYPE=MinSizeRel -G "CodeBlocks - Unix Makefiles" . -B "./cmake-build-minsizerel"`
 
