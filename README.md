@@ -29,7 +29,7 @@ cmake --build ./cmake-build-minsizerel --target minipro-gui -- -j 2
 ./cmake-build-minsizerel/minipro-gui
 ```
 
-  (*If your OS uses Wayland (e.g. Raspberry PI5), please also install `qt6-wayland` via apt-get*)
+  (*If your OS uses Wayland (e.g. Raspberry PI 5), please also install `qt6-wayland` via apt-get*)
 
 #### Fedora
 Install minipro: https://gitlab.com/DavidGriffith/minipro#install-build-dependencies
