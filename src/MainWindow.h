@@ -12,6 +12,7 @@
 #include <iostream>
 #include <QtDebug>
 #include <QFile>
+#include <QListWidget>
 
 
 class MainWindow : public QMainWindow {
@@ -23,6 +24,7 @@ public:
     QString programmer;
     QString device;
 
+    QDialog device_selector;
     QPushButton *button_programmer;
     QPushButton *button_device;
 
@@ -48,6 +50,7 @@ private:
     QWidget *window;
 
     QGridLayout *layout;
+    QGridLayout *devices_layout;
 
     QFont monospace_font;
 

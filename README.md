@@ -41,3 +41,13 @@ cmake -DCMAKE_BUILD_TYPE=MinSizeRel -G "CodeBlocks - Unix Makefiles" . -B "./cma
 cmake --build ./cmake-build-minsizerel --target minipro-gui -- -j 2
 ./cmake-build-minsizerel/minipro-gui
 ```
+
+#### openSUSE
+
+```
+sudo zypper install --type pattern devel_basis
+sudo zypper install cmake Mesa-libGL-devel qt6-base-devel -y
+cmake -DCMAKE_BUILD_TYPE=MinSizeRel -G "CodeBlocks - Unix Makefiles" . -B "./cmake-build-minsizerel"
+cmake --build ./cmake-build-minsizerel --target minipro-gui -- -j 2
+./cmake-build-minsizerel/minipro-gui
+```

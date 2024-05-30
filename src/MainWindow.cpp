@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     layout->addWidget(button_programmer, 1, 0);
     connect(button_programmer, SIGNAL (released()),this, SLOT (check_for_programmer()));
     layout->addWidget(button_device, 2, 0);
-    connect(button_device, SIGNAL (released()),this, SLOT (select_device()));
+    connect(button_device, SIGNAL (released()),this, SLOT (get_devices()));
 
     layout->addWidget(actions_label, 3, 0);
     layout->addWidget(button_blank, 4, 0);
@@ -154,17 +154,30 @@ void MainWindow::check_for_programmer(){
 }
 
 void MainWindow::get_devices(){
+    QListWidget *listWidget = new QListWidget(this);
+
     QStringList arguments;
     arguments << "-l";
-    run_process(*device_view, arguments, "stdout");
+
+    QStringList devices_list = run_process(*status_view, arguments, "stdout").split("\n", Qt::SkipEmptyParts);;
+    listWidget->addItems(devices_list);
+
+    devices_layout = new QGridLayout();
+    devices_layout->addWidget(listWidget);
+
+    device_selector.setLayout(devices_layout);
+    device_selector.setModal(true);
+    device_selector.show();
+    select_device();
 }
 
 void MainWindow::select_device(){
     device = "M2732@DIP24";
-    button_device->setText(device);
     QStringList arguments;
     arguments << "-d" << device;
     run_process(*device_view, arguments);
+
+    button_device->setText(device);
 }
 
 void MainWindow::check_blank(){
