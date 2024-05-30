@@ -17,10 +17,10 @@
 
 `./cmake-build-minsizerel/minipro-gui`
 
-#### Ubuntu
+#### Ubuntu / Debian
 Install minipro: https://gitlab.com/DavidGriffith/minipro#install-build-dependencies
 
-`sudo apt-get install build-essential libgl1-mesa-dev cmake qt6-base-dev -y`
+`sudo apt-get install build-essential cmake libgl1-mesa-dev qt6-base-dev -y`
 
 `cmake -DCMAKE_BUILD_TYPE=MinSizeRel -G "CodeBlocks - Unix Makefiles" . -B "./cmake-build-minsizerel"`
 
