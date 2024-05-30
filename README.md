@@ -1,10 +1,9 @@
 ![minipro.jpg](res%2FAppIcon.ico)
-## minipro-gui
+## MINIPRO-GUI
 ### Very-much experimental GUI wrapper for the awesome [minipro](https://gitlab.com/DavidGriffith/minipro) CLI tool
 *(Not affiliated with MiniPRO devices or manufacturers, nor with the minipro CLI project.)*
 
 ![screenshot.png](res%2Fscreenshot.png)
-
 ### Installation
 ```
 git clone https://github.com/twelve-chairs/minipro-gui.git
@@ -30,7 +29,7 @@ cmake --build ./cmake-build-minsizerel --target minipro-gui -- -j 2
 ./cmake-build-minsizerel/minipro-gui
 ```
 
-*If your OS uses Wayland (e.g. Raspberry PI5), please also install `qt6-wayland` via apt-get*
+  (*If your OS uses Wayland (e.g. Raspberry PI5), please also install `qt6-wayland` via apt-get*)
 
 #### Fedora
 Install minipro: https://gitlab.com/DavidGriffith/minipro#install-build-dependencies
