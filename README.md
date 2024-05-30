@@ -1,8 +1,11 @@
 ![minipro.jpg](res%2FAppIcon.ico)
+## minipro-gui
 ### Very-much experimental GUI wrapper for the awesome [minipro](https://gitlab.com/DavidGriffith/minipro) CLI tool
 *(Not affiliated with MiniPRO devices or manufacturers, nor with the minipro CLI project.)*
 
 ![screenshot.png](res%2Fscreenshot.png)
+
+### Installation
 `git clone https://github.com/twelve-chairs/minipro-gui.git`
 
 `cd minipro-gui`
