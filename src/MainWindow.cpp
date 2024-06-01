@@ -5,24 +5,20 @@ void MainWindow::initializer(){
     layout = new QGridLayout(window);
 
     window->setWindowTitle("minipro CLI not found!");
-    window->setMinimumSize(800, 500);
+    window->setMinimumSize(1000, 500);
 
     minipro_found = false;
     programmer_found = false;
 
-    targets_label = new QLabel("Targets");
-    actions_label = new QLabel("Actions");
-    device_view_label = new QLabel("Device Info");
-    hex_view_label = new QLabel("HEX Viewer");
-    status_view_label = new QLabel("Output");
+    button_programmer = new QComboBox;
 
-    button_programmer = new QPushButton("No programmer found");
-    button_device = new QPushButton("Select Device");
     button_blank = new QPushButton("Blank Check");
     button_write = new QPushButton("Write to Device");
     button_read = new QPushButton("Read from Device");
     button_erase = new QPushButton("Erase Device");
     button_update = new QPushButton("Update Firmware");
+
+    button_device = new QComboBox();
 
     device_view = new QPlainTextEdit(window);
     hex_view = new QPlainTextEdit(window);
@@ -34,35 +30,61 @@ void MainWindow::initializer(){
     device_view->setFont(monospace_font);
     hex_view->setFont(monospace_font);
     status_view->setFont(monospace_font);
+
+//    get_programmers();
+//    get_devices();
+//    check_for_programmer();
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     initializer();
 
-    layout->addWidget(targets_label, 0, 0);
-    layout->addWidget(button_programmer, 1, 0);
-    connect(button_programmer, SIGNAL (released()),this, SLOT (check_for_programmer()));
-    layout->addWidget(button_device, 2, 0);
-    connect(button_device, SIGNAL (released()),this, SLOT (get_devices()));
+    QGroupBox *groupBox = new QGroupBox(tr("Targets"));
+    QVBoxLayout *vbox = new QVBoxLayout;
+    vbox->addWidget(button_programmer);
+    connect(button_programmer, SIGNAL (currentTextChanged(QString)),this, SLOT (check_for_programmer(QString)));
+    vbox->addWidget(button_device);
+    connect(button_device, SIGNAL (currentTextChanged(QString)),this, SLOT (select_device(QString)));
+    vbox->addStretch(1);
+    groupBox->setLayout(vbox);
+    layout->addWidget(groupBox, 0, 0);
 
-    layout->addWidget(actions_label, 3, 0);
-    layout->addWidget(button_blank, 4, 0);
+    QGroupBox *groupBox3 = new QGroupBox(tr("Actions"));
+    QVBoxLayout *vbox3 = new QVBoxLayout;
+    vbox3->addWidget(button_blank);
     connect(button_blank, SIGNAL (released()),this, SLOT (check_blank()));
-    layout->addWidget(button_read, 5, 0);
+    vbox3->addWidget(button_read);
     connect(button_read, SIGNAL (released()),this, SLOT (read_device()));
-    layout->addWidget(button_write, 6, 0);
+    vbox3->addWidget(button_write);
     connect(button_write, SIGNAL (released()),this, SLOT (write_device()));
-    layout->addWidget(button_erase, 7, 0);
+    vbox3->addWidget(button_erase);
     connect(button_erase, SIGNAL (released()),this, SLOT (erase_device()));
-    layout->addWidget(button_update, 8, 0);
+    vbox3->addWidget(button_update);
     connect(button_update, SIGNAL (released()),this, SLOT (update_firmware()));
+//    vbox3->addStretch(1);
+    groupBox3->setLayout(vbox3);
+    layout->addWidget(groupBox3, 2, 0);
 
-    layout->addWidget(device_view_label, 0, 1);
-    layout->addWidget(device_view, 1, 1, 2, 1);
-    layout->addWidget(hex_view_label, 3, 1);
-    layout->addWidget(hex_view, 4, 1, 5, 1);
-    layout->addWidget(status_view_label, 9, 0);
-    layout->addWidget(status_view, 10, 0, 1, 0);
+    QGroupBox *groupBox4 = new QGroupBox(tr("Device Info"));
+    QVBoxLayout *vbox4 = new QVBoxLayout;
+    vbox4->addWidget(device_view);
+    vbox4->addStretch(1);
+    groupBox4->setLayout(vbox4);
+    layout->addWidget(groupBox4, 0, 1);
+
+    QGroupBox *groupBox5 = new QGroupBox(tr("Hex Viewer"));
+    QVBoxLayout *vbox5 = new QVBoxLayout;
+    vbox5->addWidget(hex_view);
+    vbox5->addStretch(1);
+    groupBox5->setLayout(vbox5);
+    layout->addWidget(groupBox5, 2, 1);
+
+    QGroupBox *groupBox6 = new QGroupBox(tr("Output"));
+    QVBoxLayout *vbox6 = new QVBoxLayout;
+    vbox6->addWidget(status_view);
+    vbox6->addStretch(1);
+    groupBox6->setLayout(vbox6);
+    layout->addWidget(groupBox6, 3, 0, 1 , 0);
 
     device_view->setReadOnly(true);
     hex_view->setReadOnly(true);
@@ -73,7 +95,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     window->show();
 
     check_for_minipro();
-    check_for_programmer();
+//    check_for_programmer();
 }
 
 MainWindow::~MainWindow() {
@@ -102,48 +124,67 @@ QString MainWindow::run_process(QPlainTextEdit &status_text, const QStringList &
         output += minipro.readAllStandardOutput();
     }
 
+    QRegularExpression re("Serial code:.*\\n([\\s\\S]*)");
+    QRegularExpressionMatch match = re.match(output);
+    if (match.hasMatch()) {
+        output = match.captured(1);
+    }
     status_text.appendPlainText("[Output]: " + output);
     status_text.ensureCursorVisible();
     return output;
 }
 
 void MainWindow::check_for_minipro(){
+    button_programmer->setDisabled(true);
     QStringList arguments;
     arguments << "--version";
     QString initial_check_error = run_process(*status_view, arguments);
     if (initial_check_error.length() > 0 && initial_check_error.contains("minipro version")) {
-            QRegularExpression re("minipro version.*\\n");
-            QRegularExpressionMatch match = re.match(initial_check_error);
-            if (match.hasMatch()) {
-                window->setWindowTitle(match.captured(0).trimmed());
-                minipro_found = true;
-                button_programmer->setDisabled(false);
-            }
-            else {
-                button_programmer->setDisabled(true);
-            }
+        QRegularExpression re("minipro version.*\\n");
+        QRegularExpressionMatch match = re.match(initial_check_error);
+        if (match.hasMatch()) {
+            window->setWindowTitle(match.captured(0).trimmed());
+            minipro_found = true;
+            button_programmer->setDisabled(false);
+            get_programmers();
+            check_for_programmer();
+            get_devices();
+        }
     }
 }
 
-void MainWindow::check_for_programmer(){
+void MainWindow::get_programmers(){
+    QStringList arguments;
+    arguments << "--query_supported";
+
+    programmers_list.clear();
+    programmers_list << "No programmer";
+    programmers_list << run_process(*status_view, arguments, "stderr").split("\n", Qt::SkipEmptyParts);;
+
+    button_programmer->addItems(programmers_list);
+}
+
+void MainWindow::check_for_programmer(const QString& selected_programmer){
     QStringList arguments;
     arguments << "--presence_check";
+
     QRegularExpression re("(?<=: ).*$");
     QRegularExpressionMatch match = re.match(run_process(*status_view, arguments).trimmed());
     if (match.hasMatch()) {
         programmer = match.captured(0);
         programmer_found = true;
-        button_programmer->setText(programmer);
+        button_programmer->setCurrentText(selected_programmer);
         button_device->setDisabled(false);
         button_blank->setDisabled(false);
         button_read->setDisabled(false);
         button_write->setDisabled(false);
         button_erase->setDisabled(false);
         button_update->setDisabled(false);
-
     }
     else {
-        button_programmer->setText("No programmer found");
+        button_programmer->setPlaceholderText("No programmer found");
+        button_programmer->setDisabled(true);
+        programmer_found = false;
         button_device->setDisabled(true);
         button_blank->setDisabled(true);
         button_read->setDisabled(true);
@@ -154,30 +195,31 @@ void MainWindow::check_for_programmer(){
 }
 
 void MainWindow::get_devices(){
-    QListWidget *listWidget = new QListWidget(this);
+    if (programmer_found) {
+        QStringList arguments;
+        arguments << "-l";
 
-    QStringList arguments;
-    arguments << "-l";
+        devices_list.clear();
+        devices_list << "Select device";
+        devices_list << run_process(*status_view, arguments, "stdout").split("\n", Qt::SkipEmptyParts);;
 
-    QStringList devices_list = run_process(*status_view, arguments, "stdout").split("\n", Qt::SkipEmptyParts);;
-    listWidget->addItems(devices_list);
-
-    devices_layout = new QGridLayout();
-    devices_layout->addWidget(listWidget);
-
-    device_selector.setLayout(devices_layout);
-    device_selector.setModal(true);
-    device_selector.show();
-    select_device();
+        button_device->addItems(devices_list);
+    }
 }
 
-void MainWindow::select_device(){
-    device = "M2732@DIP24";
-    QStringList arguments;
-    arguments << "-d" << device;
-    run_process(*device_view, arguments);
+void MainWindow::select_device(const QString& selected_device){
+    if (selected_device != ""){
+        device = selected_device;
+        QStringList arguments;
+        arguments << "-d" << device;
 
-    button_device->setText(device);
+        QRegularExpression re("Name:([\\s\\S]*)($)");
+        QRegularExpressionMatch match = re.match(run_process(*device_view, arguments));
+        if (match.hasMatch()) {
+            device_view->setPlainText(match.captured(0));
+            hex_view->clear();
+        }
+    }
 }
 
 void MainWindow::check_blank(){
@@ -190,10 +232,14 @@ void MainWindow::check_blank(){
 void MainWindow::read_device(){
     QStringList arguments;
     arguments << "-p" << device << "-r" << "temp.bin";
-    run_process(*status_view, arguments);
-    QFile f("temp.bin");
-    f.open(QFile::ReadOnly);
-    hex_view->setPlainText(QString::fromUtf8(f.readAll().toHex()));
+    if (!run_process(*status_view, arguments).contains("Unsupported device!")) {
+        QFile f("temp.bin");
+        f.open(QFile::ReadOnly);
+        hex_view->setPlainText(QString::fromUtf8(f.readAll().toHex()));
+    }
+    else {
+        hex_view->clear();
+    }
 }
 
 void MainWindow::write_device(){

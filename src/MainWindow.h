@@ -13,6 +13,8 @@
 #include <QtDebug>
 #include <QFile>
 #include <QListWidget>
+#include <QGroupBox>
+#include <QComboBox>
 
 
 class MainWindow : public QMainWindow {
@@ -25,21 +27,27 @@ public:
     QString device;
 
     QDialog device_selector;
-    QPushButton *button_programmer;
-    QPushButton *button_device;
+    QComboBox *button_programmer;
+    QComboBox *button_device;
 
     QPlainTextEdit *status_view;
     QPlainTextEdit *device_view;
     QPlainTextEdit *hex_view;
+
+    QStringList programmers_list;
+    QStringList devices_list;
+
 
     static QString run_process(QPlainTextEdit&, const QStringList&, const QString&);
     explicit MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow();
 
 private slots:
-    void check_for_programmer();
+    void check_for_programmer(const QString& = "");
+    void get_programmers();
     void get_devices();
-    void select_device();
+    void select_device(const QString& = "");
+
     void check_blank();
     void read_device();
     void write_device();
@@ -53,12 +61,6 @@ private:
     QGridLayout *devices_layout;
 
     QFont monospace_font;
-
-    QLabel *targets_label;
-    QLabel *actions_label;
-    QLabel *status_view_label;
-    QLabel *device_view_label;
-    QLabel *hex_view_label;
 
     QPushButton *button_blank;
     QPushButton *button_write;
