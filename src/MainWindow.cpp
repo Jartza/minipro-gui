@@ -61,26 +61,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     connect(button_erase, SIGNAL (released()),this, SLOT (erase_device()));
     vbox3->addWidget(button_update);
     connect(button_update, SIGNAL (released()),this, SLOT (update_firmware()));
-//    vbox3->addStretch(1);
     groupBox3->setLayout(vbox3);
     layout->addWidget(groupBox3, 2, 0);
 
-    QGroupBox *groupBox4 = new QGroupBox(tr("Device Info"));
-    QVBoxLayout *vbox4 = new QVBoxLayout;
+    auto *groupBox4 = new QGroupBox(tr("Device Info"));
+    auto *vbox4 = new QVBoxLayout;
     vbox4->addWidget(device_view);
     vbox4->addStretch(1);
     groupBox4->setLayout(vbox4);
     layout->addWidget(groupBox4, 0, 1);
 
-    QGroupBox *groupBox5 = new QGroupBox(tr("Hex Viewer"));
-    QVBoxLayout *vbox5 = new QVBoxLayout;
+    auto *groupBox5 = new QGroupBox(tr("Hex Viewer"));
+    auto *vbox5 = new QVBoxLayout;
     vbox5->addWidget(hex_view);
     vbox5->addStretch(1);
     groupBox5->setLayout(vbox5);
     layout->addWidget(groupBox5, 2, 1);
 
-    QGroupBox *groupBox6 = new QGroupBox(tr("Output"));
-    QVBoxLayout *vbox6 = new QVBoxLayout;
+    auto *groupBox6 = new QGroupBox(tr("Output"));
+    auto *vbox6 = new QVBoxLayout;
     vbox6->addWidget(status_view);
     vbox6->addStretch(1);
     groupBox6->setLayout(vbox6);
@@ -95,7 +94,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     window->show();
 
     check_for_minipro();
-//    check_for_programmer();
 }
 
 MainWindow::~MainWindow() {
@@ -124,7 +122,7 @@ QString MainWindow::run_process(QPlainTextEdit &status_text, const QStringList &
         output += minipro.readAllStandardOutput();
     }
 
-    QRegularExpression re("Serial code:.*\\n([\\s\\S]*)");
+    QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
     QRegularExpressionMatch match = re.match(output);
     if (match.hasMatch()) {
         output = match.captured(1);
@@ -200,7 +198,6 @@ void MainWindow::get_devices(){
         arguments << "-l";
 
         devices_list.clear();
-//        devices_list << "Select device";
         devices_list << run_process(*status_view, arguments, "stdout").split("\n", Qt::SkipEmptyParts);;
         devices_list.sort();
 
@@ -233,7 +230,8 @@ void MainWindow::check_blank(){
 void MainWindow::read_device(){
     QStringList arguments;
     arguments << "-p" << device << "-r" << "temp.bin";
-    if (!run_process(*status_view, arguments).contains("Unsupported device!")) {
+    if (!run_process(*status_view, arguments).contains("Unsupported device")
+        && !run_process(*status_view, arguments).contains("Invalid Chip ID")) {
         QFile f("temp.bin");
         f.open(QFile::ReadOnly);
         hex_view->setPlainText(QString::fromUtf8(f.readAll().toHex()));
@@ -254,7 +252,6 @@ void MainWindow::erase_device(){
 }
 
 void MainWindow::update_firmware(){
-//    QFileDialog fileDialog;
     QString fileName = QFileDialog::getOpenFileName(this);
     QStringList arguments;
     arguments << "-p" << device << "-F" << fileName;
