@@ -221,20 +221,44 @@ void MainWindow::select_device(const QString& selected_device){
 }
 
 void MainWindow::check_blank(){
-    read_device();
     QStringList arguments;
     arguments << "-p" << device << "-b";
     run_process(*status_view, arguments);
 }
 
 void MainWindow::read_device(){
+    hex_view->clear();
     QStringList arguments;
     arguments << "-p" << device << "-r" << "temp.bin";
     if (!run_process(*status_view, arguments).contains("Unsupported device")
         && !run_process(*status_view, arguments).contains("Invalid Chip ID")) {
         QFile f("temp.bin");
         f.open(QFile::ReadOnly);
-        hex_view->setPlainText(QString::fromUtf8(f.readAll().toHex()));
+        QString temp = QString::fromUtf8(f.readAll().toHex());
+        //.toHex()
+        QString formatted = "";
+        QString ascii = "";
+        std::cout << temp.length() / 2 << std::endl;
+        int line = 0;
+        int chars_per_line = 32; //chars per line (bytes * 2)
+        int current;
+        int end;
+        for (int i=0; i < temp.length(); i++){
+            if (i % 2 != 0){
+                QString byte = QChar(temp[i-1]);
+//                ascii += (char)QChar(temp[i-1]);
+                byte += QChar(temp[i]);
+                byte += " ";
+                formatted += byte;
+            }
+            if (i % chars_per_line == 0){
+                if (line != 0) {
+                    formatted += "  ................\n";
+                }
+                line++;
+            }
+        }
+        hex_view->setPlainText(formatted);
     }
     else {
         hex_view->clear();
@@ -242,7 +266,7 @@ void MainWindow::read_device(){
 }
 
 void MainWindow::write_device(){
-
+    QString fileName = QFileDialog::getOpenFileName(this);
 }
 
 void MainWindow::erase_device(){
@@ -253,7 +277,9 @@ void MainWindow::erase_device(){
 
 void MainWindow::update_firmware(){
     QString fileName = QFileDialog::getOpenFileName(this);
-    QStringList arguments;
-    arguments << "-p" << device << "-F" << fileName;
-    run_process(*status_view, arguments);
+    if (fileName != "") {
+        QStringList arguments;
+        arguments << "-p" << device << "-F" << fileName;
+        run_process(*status_view, arguments);
+    }
 }
