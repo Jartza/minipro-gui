@@ -2,6 +2,7 @@
 #define MINIPRO_GUI_MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStatusBar>
 #include <QProcess>
 #include <QLabel>
 #include <QPushButton>
@@ -10,12 +11,12 @@
 #include <QRegularExpression>
 #include <QDialog>
 #include <QFileDialog>
-#include <iostream>
 #include <QtDebug>
 #include <QFile>
 #include <QListWidget>
 #include <QGroupBox>
 #include <QComboBox>
+#include <iostream>
 
 
 class MainWindow : public QMainWindow {
@@ -38,14 +39,12 @@ public:
     QStringList programmers_list;
     QStringList devices_list;
 
-
     static QString run_process(QPlainTextEdit&, const QStringList&, const QString&);
     explicit MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow();
 
 private slots:
     void check_for_programmer(const QString& = "");
-    void get_programmers();
     void get_devices();
     void select_device(const QString& = "");
 

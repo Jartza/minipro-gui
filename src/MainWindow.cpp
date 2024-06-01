@@ -6,6 +6,7 @@ void MainWindow::initializer(){
 
     window->setWindowTitle("minipro CLI not found!");
     window->setMinimumSize(1000, 500);
+    statusBar()->showMessage(tr("minipro-gui v0.1"));
 
     minipro_found = false;
     programmer_found = false;
@@ -56,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     connect(button_erase, SIGNAL (released()),this, SLOT (erase_device()));
     vbox3->addWidget(button_update);
     connect(button_update, SIGNAL (released()),this, SLOT (update_firmware()));
+    vbox3->addStretch(1);
     groupBox3->setLayout(vbox3);
     layout->addWidget(groupBox3, 2, 0);
 
@@ -91,9 +93,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     check_for_minipro();
 }
 
-MainWindow::~MainWindow() {
-
-}
+MainWindow::~MainWindow() = default;
 
 QString MainWindow::run_process(QPlainTextEdit &status_text, const QStringList &arguments, const QString &type = "stderr") {
     QProcess minipro;
@@ -145,15 +145,6 @@ void MainWindow::check_for_minipro(){
             get_devices();
         }
     }
-}
-
-void MainWindow::get_programmers(){
-    QStringList arguments;
-    arguments << "--query_supported";
-
-    programmers_list.clear();
-    programmers_list << "No programmer";
-    programmers_list << run_process(*status_view, arguments, "stderr").split("\n", Qt::SkipEmptyParts);;
 }
 
 void MainWindow::check_for_programmer(const QString& selected_programmer){
