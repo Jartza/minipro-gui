@@ -1,6 +1,6 @@
 ![minipro.jpg](res%2FAppIcon.ico)
 ## MINIPRO-GUI
-### Experimental GUI wrapper for the awesome [minipro](https://gitlab.com/DavidGriffith/minipro) CLI tool
+### Basic GUI wrapper for the amazing [minipro](https://gitlab.com/DavidGriffith/minipro) CLI tool
 *(Not affiliated with MiniPRO devices or manufacturers, nor with the minipro CLI project.)*
 
 ![screenshot.png](res%2Fscreenshot.png)

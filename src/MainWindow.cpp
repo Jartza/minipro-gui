@@ -38,7 +38,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     auto *groupBox = new QGroupBox(tr("Targets"));
     auto *vbox = new QVBoxLayout;
     vbox->addWidget(button_programmer);
-    connect(button_programmer, SIGNAL (currentTextChanged(QString)),this, SLOT (check_for_programmer(QString)));
     vbox->addWidget(button_device);
     connect(button_device, SIGNAL (currentTextChanged(QString)),this, SLOT (select_device(QString)));
     vbox->addStretch(1);
@@ -126,12 +125,6 @@ QString MainWindow::run_process(QPlainTextEdit &status_text, const QStringList &
             output = match.captured(1);
         }
     }
-
-//    QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
-//    if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
-//        output = match.captured(1);
-//    }
-//    status_text.appendPlainText("[Output]: " + output);
     status_text.ensureCursorVisible();
     return output;
 }
@@ -222,13 +215,13 @@ void MainWindow::select_device(const QString& selected_device){
     }
 }
 
-void MainWindow::check_blank(){
+void MainWindow::check_blank() const{
     QStringList arguments;
     arguments << "-p" << device << "-b";
     run_process(*status_view, arguments);
 }
 
-void MainWindow::read_device(){
+void MainWindow::read_device() const{
     hex_view->clear();
     QString temp_file = "temp.bin";
     QStringList arguments;
@@ -249,8 +242,8 @@ void MainWindow::read_device(){
                 uint ascii_int = byte.toUInt(nullptr, 16);
                 byte += " ";
                 formatted += byte;
-                QChar ascii_char = QChar(ascii_int);
-                if (!ascii_char.isPrint() || ascii_char.isNonCharacter()){
+                auto ascii_char = QChar(ascii_int);
+                if (!ascii_char.isPrint() || ascii_char.isNonCharacter() || ascii_char.isNull()){
                     ascii_char = '.';
                 }
                 ascii_string += QChar(ascii_char);
@@ -259,7 +252,6 @@ void MainWindow::read_device(){
                 line++;
                 formatted += "  " + ascii_string + "\n";
                 ascii_string = "";
-
             }
         }
         hex_view->setPlainText(formatted);
@@ -278,7 +270,7 @@ void MainWindow::write_device(){
     }
 }
 
-void MainWindow::erase_device(){
+void MainWindow::erase_device() const{
     QStringList arguments;
     arguments << "-p" << device << "-E";
     run_process(*status_view, arguments);

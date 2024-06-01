@@ -49,10 +49,10 @@ private slots:
     void get_devices();
     void select_device(const QString& = "");
 
-    void check_blank();
-    void read_device();
+    void check_blank() const;
+    void read_device() const;
     void write_device();
-    void erase_device();
+    void erase_device() const;
     void update_firmware();
 
 private:

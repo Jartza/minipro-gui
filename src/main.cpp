@@ -1,7 +1,5 @@
 #include <QApplication>
 #include "MainWindow.h"
-#include "Programmers.h"
-#include "Devices.h"
 #include "Read.h"
 #include "Write.h"
 #include "Firmware.h"
