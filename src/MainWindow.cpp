@@ -30,17 +30,13 @@ void MainWindow::initializer(){
     device_view->setFont(monospace_font);
     hex_view->setFont(monospace_font);
     status_view->setFont(monospace_font);
-
-//    get_programmers();
-//    get_devices();
-//    check_for_programmer();
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     initializer();
 
-    QGroupBox *groupBox = new QGroupBox(tr("Targets"));
-    QVBoxLayout *vbox = new QVBoxLayout;
+    auto *groupBox = new QGroupBox(tr("Targets"));
+    auto *vbox = new QVBoxLayout;
     vbox->addWidget(button_programmer);
     connect(button_programmer, SIGNAL (currentTextChanged(QString)),this, SLOT (check_for_programmer(QString)));
     vbox->addWidget(button_device);
@@ -49,8 +45,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     groupBox->setLayout(vbox);
     layout->addWidget(groupBox, 0, 0);
 
-    QGroupBox *groupBox3 = new QGroupBox(tr("Actions"));
-    QVBoxLayout *vbox3 = new QVBoxLayout;
+    auto *groupBox3 = new QGroupBox(tr("Actions"));
+    auto *vbox3 = new QVBoxLayout;
     vbox3->addWidget(button_blank);
     connect(button_blank, SIGNAL (released()),this, SLOT (check_blank()));
     vbox3->addWidget(button_read);
@@ -117,17 +113,25 @@ QString MainWindow::run_process(QPlainTextEdit &status_text, const QStringList &
     }
     if (type == "stderr"){
         output += minipro.readAllStandardError();
+        QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
+        if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
+            output = match.captured(1);
+        }
+        status_text.appendPlainText("[Output]: " + output);
     }
     else if (type == "stdout"){
         output += minipro.readAllStandardOutput();
+        QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
+        if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
+            output = match.captured(1);
+        }
     }
 
-    QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
-    QRegularExpressionMatch match = re.match(output);
-    if (match.hasMatch()) {
-        output = match.captured(1);
-    }
-    status_text.appendPlainText("[Output]: " + output);
+//    QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
+//    if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
+//        output = match.captured(1);
+//    }
+//    status_text.appendPlainText("[Output]: " + output);
     status_text.ensureCursorVisible();
     return output;
 }
@@ -144,7 +148,6 @@ void MainWindow::check_for_minipro(){
             window->setWindowTitle(match.captured(0).trimmed());
             minipro_found = true;
             button_programmer->setDisabled(false);
-            get_programmers();
             check_for_programmer();
             get_devices();
         }
@@ -158,8 +161,6 @@ void MainWindow::get_programmers(){
     programmers_list.clear();
     programmers_list << "No programmer";
     programmers_list << run_process(*status_view, arguments, "stderr").split("\n", Qt::SkipEmptyParts);;
-
-    button_programmer->addItems(programmers_list);
 }
 
 void MainWindow::check_for_programmer(const QString& selected_programmer){
@@ -171,7 +172,8 @@ void MainWindow::check_for_programmer(const QString& selected_programmer){
     if (match.hasMatch()) {
         programmer = match.captured(0);
         programmer_found = true;
-        button_programmer->setCurrentText(selected_programmer);
+        button_programmer->addItem(programmer);
+        button_programmer->setDisabled(true);
         button_device->setDisabled(false);
         button_blank->setDisabled(false);
         button_read->setDisabled(false);
@@ -228,34 +230,36 @@ void MainWindow::check_blank(){
 
 void MainWindow::read_device(){
     hex_view->clear();
+    QString temp_file = "temp.bin";
     QStringList arguments;
-    arguments << "-p" << device << "-r" << "temp.bin";
+    arguments << "-p" << device << "-r" << temp_file;
     if (!run_process(*status_view, arguments).contains("Unsupported device")
         && !run_process(*status_view, arguments).contains("Invalid Chip ID")) {
-        QFile f("temp.bin");
+        QFile f(temp_file);
         f.open(QFile::ReadOnly);
         QString temp = QString::fromUtf8(f.readAll().toHex());
-        //.toHex()
         QString formatted = "";
-        QString ascii = "";
-        std::cout << temp.length() / 2 << std::endl;
         int line = 0;
-        int chars_per_line = 32; //chars per line (bytes * 2)
-        int current;
-        int end;
-        for (int i=0; i < temp.length(); i++){
+        int chars_per_line = 32; //chars per line (16 bytes * 2)
+        QString ascii_string;
+        for (int i=0; i <= temp.length(); i++){
             if (i % 2 != 0){
-                QString byte = QChar(temp[i-1]);
-//                ascii += (char)QChar(temp[i-1]);
-                byte += QChar(temp[i]);
+                QString byte = QChar(temp[i-1]).toUpper();
+                byte += QChar(temp[i]).toUpper();
+                uint ascii_int = byte.toUInt(nullptr, 16);
                 byte += " ";
                 formatted += byte;
+                QChar ascii_char = QChar(ascii_int);
+                if (!ascii_char.isPrint() || ascii_char.isNonCharacter()){
+                    ascii_char = '.';
+                }
+                ascii_string += QChar(ascii_char);
             }
             if (i % chars_per_line == 0){
-                if (line != 0) {
-                    formatted += "  ................\n";
-                }
                 line++;
+                formatted += "  " + ascii_string + "\n";
+                ascii_string = "";
+
             }
         }
         hex_view->setPlainText(formatted);
@@ -267,6 +271,11 @@ void MainWindow::read_device(){
 
 void MainWindow::write_device(){
     QString fileName = QFileDialog::getOpenFileName(this);
+    if (fileName != "") {
+        QStringList arguments;
+        arguments << "-p" << device << "-w" << fileName;
+        run_process(*status_view, arguments);
+    }
 }
 
 void MainWindow::erase_device(){
