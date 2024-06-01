@@ -9,6 +9,7 @@
 #include <QGridLayout>
 #include <QRegularExpression>
 #include <QDialog>
+#include <QFileDialog>
 #include <iostream>
 #include <QtDebug>
 #include <QFile>

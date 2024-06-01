@@ -200,8 +200,9 @@ void MainWindow::get_devices(){
         arguments << "-l";
 
         devices_list.clear();
-        devices_list << "Select device";
+//        devices_list << "Select device";
         devices_list << run_process(*status_view, arguments, "stdout").split("\n", Qt::SkipEmptyParts);;
+        devices_list.sort();
 
         button_device->addItems(devices_list);
     }
@@ -253,7 +254,9 @@ void MainWindow::erase_device(){
 }
 
 void MainWindow::update_firmware(){
+//    QFileDialog fileDialog;
+    QString fileName = QFileDialog::getOpenFileName(this);
     QStringList arguments;
-    arguments << "-p" << device << "-F";
+    arguments << "-p" << device << "-F" << fileName;
     run_process(*status_view, arguments);
 }
