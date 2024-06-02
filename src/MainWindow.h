@@ -18,60 +18,58 @@
 #include <QComboBox>
 #include <iostream>
 
-
 class MainWindow : public QMainWindow {
-Q_OBJECT
-public:
-    bool minipro_found;
-    bool programmer_found;
+ Q_OBJECT
+ public:
+  bool minipro_found;
+  bool programmer_found;
 
-    QString programmer;
-    QString device;
+  QString programmer;
+  QString device;
 
-    QDialog device_selector;
-    QComboBox *button_programmer;
-    QComboBox *button_device;
+  QDialog device_selector;
+  QComboBox *button_programmer;
+  QComboBox *button_device;
 
-    QPlainTextEdit *status_view;
-    QPlainTextEdit *device_view;
-    QPlainTextEdit *hex_view;
+  QPlainTextEdit *status_view;
+  QPlainTextEdit *device_view;
+  QPlainTextEdit *hex_view;
 
-    QStringList programmers_list;
-    QStringList devices_list;
+  QStringList programmers_list;
+  QStringList devices_list;
 
-    static QString run_process(QPlainTextEdit&, const QStringList&, const QString&);
-    explicit MainWindow(QWidget *parent = nullptr);
-    virtual ~MainWindow();
+  static QString run_process(QPlainTextEdit &, const QStringList &, const QString &);
+  explicit MainWindow(QWidget *parent = nullptr);
+  virtual ~MainWindow();
 
-private slots:
-    void check_for_programmer(const QString& = "");
-    void get_devices();
-    void select_device(const QString& = "");
+ private slots:
+  void check_for_programmer(const QString & = "");
+  void get_devices();
+  void select_device(const QString & = "");
 
-    void check_blank() const;
-    void read_device() const;
-    void write_device();
-    void erase_device() const;
-    void update_firmware();
+  void check_blank() const;
+  void read_device() const;
+  void write_device();
+  void erase_device() const;
+  void update_firmware();
 
-private:
-    QWidget *window;
+ private:
+  QWidget *window;
 
-    QGridLayout *layout;
-    QGridLayout *devices_layout;
+  QGridLayout *layout;
+  QGridLayout *devices_layout;
 
-    QFont monospace_font;
+  QFont monospace_font;
 
-    QPushButton *button_blank;
-    QPushButton *button_write;
-    QPushButton *button_read;
-    QPushButton *button_erase;
-    QPushButton *button_update;
+  QPushButton *button_blank;
+  QPushButton *button_write;
+  QPushButton *button_read;
+  QPushButton *button_erase;
+  QPushButton *button_update;
 
-    void initializer();
-    void check_for_minipro();
+  void initializer();
+  void check_for_minipro();
 
 };
-
 
 #endif //MINIPRO_GUI_MAINWINDOW_H
