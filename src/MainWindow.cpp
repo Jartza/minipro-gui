@@ -214,38 +214,43 @@ void MainWindow::check_blank() const {
 
 void MainWindow::read_device() const {
   hex_view->clear();
-  QString temp_file = "temp.bin";
+  QString temp_file_name = "temp.bin";
   QStringList arguments;
-  arguments << "-p" << device << "-r" << temp_file;
+  arguments << "-p" << device << "-r" << temp_file_name;
+
   if (!run_process(*status_view, arguments).contains("Unsupported device")
       && !run_process(*status_view, arguments).contains("Invalid Chip ID")) {
-    QFile f(temp_file);
-    f.open(QFile::ReadOnly);
-    QString temp = QString::fromUtf8(f.readAll().toHex());
-    QString formatted = "";
-    int line = 0;
-    int chars_per_line = 32; //chars per line (16 bytes * 2)
+    QFile temp_file(temp_file_name);
+    temp_file.open(QFile::ReadOnly);
+    QString temp_file_content = QString::fromUtf8(temp_file.readAll().toHex());
+
+    QString formatted_hex_output = "";
     QString ascii_string;
-    for (int i = 0; i <= temp.length(); i++) {
+    int chars_per_line = 32; // (16 bytes * 2)
+    int line_counter = 0;
+
+    for (int i = 0; i <= temp_file_content.length(); i++) {
+      // Format hex values, and convert to ascii
       if (i % 2 != 0) {
-        QString byte = QChar(temp[i - 1]).toUpper();
-        byte += QChar(temp[i]).toUpper();
-        uint ascii_int = byte.toUInt(nullptr, 16);
-        byte += " ";
-        formatted += byte;
-        auto ascii_char = QChar(ascii_int);
+        QString byte_string = QChar(temp_file_content[i - 1]);
+        byte_string += QChar(temp_file_content[i]);
+
+        formatted_hex_output += (byte_string.toUpper() += " ");
+
+        auto ascii_char = QChar(byte_string.toUInt(nullptr, 16));
         if (!ascii_char.isPrint() || ascii_char.isNonCharacter() || ascii_char.isNull()) {
           ascii_char = '.';
         }
-        ascii_string += QChar(ascii_char);
+        ascii_string += ascii_char;
       }
+      // Next 16-byte line
       if (i % chars_per_line == 0) {
-        line++;
-        formatted += "  " + ascii_string + "\n";
-        ascii_string = "";
+        formatted_hex_output += "  " + ascii_string + "\n";
+        ascii_string.clear();
+        line_counter++;
       }
     }
-    hex_view->setPlainText(formatted);
+    hex_view->setPlainText(formatted_hex_output);
   } else {
     hex_view->clear();
   }
