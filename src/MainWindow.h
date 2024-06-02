@@ -61,6 +61,8 @@ class MainWindow : public QMainWindow {
 
   QFont monospace_font;
 
+  const QString temp_file_name = "temp.bin";
+
   QPushButton *button_blank;
   QPushButton *button_write;
   QPushButton *button_read;
@@ -69,6 +71,7 @@ class MainWindow : public QMainWindow {
 
   void initializer();
   void check_for_minipro();
+  QString build_formatted_hex_output() const;
 
 };
 
