@@ -23,6 +23,7 @@ void MainWindow::initializer() {
 
   device_view = new QPlainTextEdit(window);
   hex_view = new QPlainTextEdit(window);
+
   status_view = new QPlainTextEdit(window);
 
   monospace_font.setFamily("Courier New");
@@ -95,38 +96,38 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 MainWindow::~MainWindow() = default;
 
-QString MainWindow::run_process(QPlainTextEdit &status_text,
-                                const QStringList &arguments,
+QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
+                                const QStringList &process_arguments,
                                 const QString &type = "stderr") {
-  QProcess minipro;
-  QString command_options = "";
-  for (auto const &each : arguments) {
-    command_options += each + " ";
+  QProcess process;
+  QString process_arguments_string = "";
+  for (auto const &each : process_arguments) {
+    process_arguments_string += each + " ";
   }
-  status_text.appendPlainText("[Input]: minipro " + command_options);
-  minipro.start("minipro", arguments);
+  target_plain_text_edit.appendPlainText("[Input]: process " + process_arguments_string);
+  process.start("process", process_arguments);
   QString output = "";
-  if (!minipro.waitForStarted()) {
+  if (!process.waitForStarted()) {
     output += "Start Error";
   }
-  if (!minipro.waitForFinished()) {
+  if (!process.waitForFinished()) {
     output += "Finished Error";
   }
   if (type == "stderr") {
-    output += minipro.readAllStandardError();
+    output += process.readAllStandardError();
     QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
     if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
       output = match.captured(1);
     }
-    status_text.appendPlainText("[Output]: " + output);
+    target_plain_text_edit.appendPlainText("[Output]: " + output);
   } else if (type == "stdout") {
-    output += minipro.readAllStandardOutput();
+    output += process.readAllStandardOutput();
     QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
     if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
       output = match.captured(1);
     }
   }
-  status_text.ensureCursorVisible();
+  target_plain_text_edit.ensureCursorVisible();
   return output;
 }
 
@@ -256,7 +257,7 @@ QString MainWindow::build_formatted_hex_output() const {
     QString temp_file_content = QString::fromUtf8(temp_file.readAll().toHex());
 
     QString formatted_hex_output = "";
-    QString ascii_string;
+    QString ascii_string_line;
 
     const int chars_per_line = 32; // (16 bytes * 2)
     int line_counter = 0;
@@ -273,12 +274,12 @@ QString MainWindow::build_formatted_hex_output() const {
         if (!ascii_char.isPrint() || ascii_char.isNonCharacter() || ascii_char.isNull()) {
           ascii_char = '.';
         }
-        ascii_string += ascii_char;
+        ascii_string_line += ascii_char;
       }
       // Next 16-byte line
       if (i % chars_per_line == 0) {
-        formatted_hex_output += "  " + ascii_string + "\n";
-        ascii_string.clear();
+        formatted_hex_output += "  " + ascii_string_line + "\n";
+        ascii_string_line.clear();
         line_counter++;
       }
     }
@@ -286,6 +287,6 @@ QString MainWindow::build_formatted_hex_output() const {
   }
   catch (const std::exception &e) {
     status_view->appendPlainText("\n[Error]: " + static_cast<QString>(e.what()));
-    return "";
+    return default_hex_output;
   }
 }
