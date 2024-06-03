@@ -105,7 +105,7 @@ QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
     process_arguments_string += each + " ";
   }
   target_plain_text_edit.appendPlainText("[Input]: process " + process_arguments_string);
-  process.start("process", process_arguments);
+  process.start("minipro", process_arguments);
   QString output = "";
   if (!process.waitForStarted()) {
     output += "Start Error";
