@@ -4,7 +4,7 @@ on: [push]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
+  BUILD_TYPE: MinSizeRel
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -29,22 +29,6 @@ jobs:
         # and build directories, but this is only available with CMake 3.13 and higher.
         # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
         run: |
-          sudo apt-get update -y
           sudo apt-get install build-essential cmake libgl1-mesa-dev qt6-base-dev -y
           cmake -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B "./cmake-build-minsizerel"
           cmake --build ./cmake-build-minsizerel --target minipro-gui -- -j 2
-
-#      - name: Sonar Build Wrapper
-#        shell: bash
-#        run: |
-#          export CONAN_SYSREQUIRES_MODE=enabled
-#          curl -L -O https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
-#          unzip -q build-wrapper-linux-x86.zip
-#          cmake -DCMAKE_BUILD_TYPE=MinSizeRel -G "CodeBlocks - Unix Makefiles" .
-#          build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-outputs cmake --build . --target lilDevil -- -j 2
-#      - name: Sonar Scanner
-#        shell: bash
-#        run: |
-#          curl -L -O https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.4.0.2170-linux.zip
-#          unzip sonar-scanner-cli-4.4.0.2170-linux.zip
-#          sonar-scanner-4.4.0.2170-linux/bin/sonar-scanner
