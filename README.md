@@ -1,5 +1,7 @@
 ![minipro.jpg](res%2FAppIcon.ico)
 ## MINIPRO-GUI
+[![GitHub Actions Status](https://github.com/OWNER/REPOSITORY/actions/workflows/WORKFLOW-FILE/badge.svg)](https://github.com/OWNER/REPOSITORY/actions/workflows/WORKFLOW-FILE/badge.svg)
+ [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=twelve-chairs_minipro-gui&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=twelve-chairs_minipro-gui)
 ### Basic GUI wrapper for the amazing [minipro](https://gitlab.com/DavidGriffith/minipro) CLI tool
 *(Not affiliated with MiniPRO devices or manufacturers, nor with the minipro CLI project.)*
 
