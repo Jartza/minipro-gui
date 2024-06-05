@@ -29,6 +29,6 @@ jobs:
         # and build directories, but this is only available with CMake 3.13 and higher.
         # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
         run: |
-          sudo apt-get install build-essential cmake libgl1-mesa-dev qt6-base-dev -y
+          sudo apt-get install build-essential ninja-build cmake libgl1-mesa-dev qt6-base-dev -y
           cmake -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B "./cmake-build-minsizerel"
           cmake --build ./cmake-build-minsizerel --target minipro-gui -- -j 2
