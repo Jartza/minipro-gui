@@ -5,7 +5,7 @@ void MainWindow::initializer() {
   layout = new QGridLayout(window);
 
   window->setWindowTitle("minipro CLI not found!");
-  window->setMinimumSize(860, 400);
+  window->setMinimumSize(880, 400);
   statusBar()->showMessage(tr("minipro-gui v0.1"));
 
   minipro_found = false;
