@@ -253,10 +253,11 @@ void MainWindow::update_firmware() {
 
 void MainWindow::build_default_hex_output() const {
   hex_view->clear();
-//  hex_view->appendPlainText("");
+  QString blank_hex;
   for (int n = 0; n < 16; n++) {
-    hex_view->appendPlainText("-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --  ................");
+    blank_hex += "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --  ................\n";
   }
+  hex_view->setPlainText(blank_hex);
 }
 
 QString MainWindow::build_formatted_hex_output() const {
