@@ -253,7 +253,7 @@ void MainWindow::update_firmware() {
 
 void MainWindow::build_default_hex_output(){
   hex_view->clear();
-  hex_view->appendPlainText("\n");
+  hex_view->appendPlainText("");
   for (int n = 0; n <= 8; n++) {
     hex_view->appendPlainText("-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --  ................");
   }
