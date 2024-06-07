@@ -273,7 +273,7 @@ QString MainWindow::build_formatted_hex_output() const {
     int line_counter = 0;
 
     for (int i = 0; i <= temp_file_content.length(); i++) {
-      // Format hex values, and convert to ascii
+      // Parse hex values, and convert to ASCII
       if (i % 2 != 0) {
         QString byte_string = QChar(temp_file_content[i - 1]);
         byte_string += QChar(temp_file_content[i]);
