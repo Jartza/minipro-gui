@@ -5,7 +5,7 @@ void MainWindow::initializer() {
   layout = new QGridLayout(window);
 
   window->setWindowTitle("minipro CLI not found!");
-  window->setMinimumSize(1000, 500);
+  window->setMinimumSize(860, 400);
   statusBar()->showMessage(tr("minipro-gui v0.1"));
 
   minipro_found = false;
@@ -23,7 +23,6 @@ void MainWindow::initializer() {
 
   device_view = new QPlainTextEdit(window);
   hex_view = new QPlainTextEdit(window);
-
   status_view = new QPlainTextEdit(window);
 
   monospace_font.setFamily("Courier New");
@@ -32,6 +31,8 @@ void MainWindow::initializer() {
   device_view->setFont(monospace_font);
   hex_view->setFont(monospace_font);
   status_view->setFont(monospace_font);
+
+  build_default_hex_output();
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
@@ -247,6 +248,13 @@ void MainWindow::update_firmware() {
     QStringList arguments;
     arguments << "-p" << device << "-F" << fileName;
     run_process(*status_view, arguments);
+  }
+}
+
+void MainWindow::build_default_hex_output(){
+  hex_view->clear();
+  for (int n = 0; n <= 8; n++) {
+    hex_view->appendPlainText("-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --  ................");
   }
 }
 

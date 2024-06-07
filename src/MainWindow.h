@@ -74,6 +74,7 @@ class MainWindow : public QMainWindow {
   void check_for_minipro();
   QString build_formatted_hex_output() const;
 
+  void build_default_hex_output();
 };
 
 #endif //MINIPRO_GUI_MAINWINDOW_H
