@@ -105,7 +105,7 @@ QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
   for (auto const &each : process_arguments) {
     process_arguments_string += each + " ";
   }
-  target_plain_text_edit.appendPlainText("[Input]: process " + process_arguments_string);
+  target_plain_text_edit.appendPlainText("[Input]: minipro " + process_arguments_string);
   process.start("minipro", process_arguments);
   QString output = "";
   if (!process.waitForStarted()) {
@@ -223,7 +223,7 @@ void MainWindow::read_device() const {
       && !run_process(*status_view, arguments).contains("Invalid Chip ID")) {
     hex_view->setPlainText(build_formatted_hex_output());
   } else {
-    hex_view->clear();
+    build_default_hex_output();
   }
 }
 
@@ -251,7 +251,7 @@ void MainWindow::update_firmware() {
   }
 }
 
-void MainWindow::build_default_hex_output(){
+void MainWindow::build_default_hex_output() const {
   hex_view->clear();
 //  hex_view->appendPlainText("");
   for (int n = 0; n < 8; n++) {
