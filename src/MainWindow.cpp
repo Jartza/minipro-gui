@@ -203,7 +203,7 @@ void MainWindow::select_device(const QString &selected_device) {
     QRegularExpressionMatch match = re.match(run_process(*device_view, arguments));
     if (match.hasMatch()) {
       device_view->setPlainText(match.captured(0));
-      hex_view->clear();
+      build_default_hex_output();
     }
   }
 }
