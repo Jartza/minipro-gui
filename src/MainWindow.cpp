@@ -280,8 +280,10 @@ QString MainWindow::build_formatted_hex_output() const {
 
         formatted_hex_output += (byte_string.toUpper() += " ");
 
-        auto ascii_char = QChar(byte_string.toUInt(nullptr, 16));
-        if (!ascii_char.isPrint() || ascii_char.isNonCharacter() || ascii_char.isNull() || ascii_char.isSymbol()) {
+        auto ascii_int = byte_string.toUInt(nullptr, 16);
+        if (ascii_int > 126) ascii_int = 46;
+        auto ascii_char = QChar(ascii_int);
+        if (!ascii_char.isPrint() || ascii_char.isNull()) {
           ascii_char = '.';
         }
         ascii_string_line += ascii_char;
