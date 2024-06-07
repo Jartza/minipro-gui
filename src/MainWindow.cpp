@@ -286,7 +286,7 @@ QString MainWindow::build_formatted_hex_output() const {
         ascii_string_line += ascii_char;
       }
       // Next 16-byte line
-      if (i % chars_per_line == 0) {
+      if (i != 0 && i % chars_per_line == 0) {
         formatted_hex_output += "  " + ascii_string_line + "\n";
         ascii_string_line.clear();
         line_counter++;
