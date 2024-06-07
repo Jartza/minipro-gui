@@ -284,9 +284,10 @@ QString MainWindow::build_formatted_hex_output() const {
         // Non-extended ASCII only
         if (ascii_int > 126) ascii_int = 46;
         auto ascii_char = QChar(ascii_int);
-//        if (!ascii_char.isPrint() || ascii_char.isNull()) {
-//          ascii_char = '.';
-//        }
+        // Printable characters only
+        if (!ascii_char.isPrint() || ascii_char.isNull()) {
+          ascii_char = '.';
+        }
         ascii_string_line += ascii_char;
       }
       // Next 16-byte line
