@@ -33,7 +33,7 @@ sudo dnf install ninja-build cmake mesa-libGL-devel qt6-qtbase-devel -y
 Install minipro: https://gitlab.com/DavidGriffith/minipro#install-build-dependencies
 ```
 sudo zypper install --type pattern devel_basis
-sudo zypper install ninja-build cmake Mesa-libGL-devel qt6-base-devel -y
+sudo zypper install cmake Mesa-libGL-devel qt6-base-devel -y
 ```
 
 ## Build and run
