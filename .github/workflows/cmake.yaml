@@ -7,7 +7,6 @@ on:
 
 env:
   BUILD_TYPE: MinSizeRel
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   build:
