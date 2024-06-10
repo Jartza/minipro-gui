@@ -9,7 +9,7 @@
 #### MacOS
 
 ```
-brew install cmake qt6 minipro
+brew install cmake ninja qt6 minipro
 ```
 
 #### Ubuntu / Debian
