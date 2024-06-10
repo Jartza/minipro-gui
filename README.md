@@ -1,7 +1,7 @@
 ![minipro.jpg](res%2FAppIcon.ico)
 # MINIPRO-GUI
 [![.github/workflows/cmake.yaml](https://github.com/twelve-chairs/minipro-gui/actions/workflows/cmake.yaml/badge.svg)](https://github.com/twelve-chairs/minipro-gui/actions/workflows/cmake.yaml) [![CodeQL](https://github.com/twelve-chairs/minipro-gui/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/twelve-chairs/minipro-gui/actions/workflows/github-code-scanning/codeql) [![Sonar Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=twelve-chairs_minipro-gui&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=twelve-chairs_minipro-gui)
-### *Basic GUI wrapper for the amazing [minipro](https://gitlab.com/DavidGriffith/minipro) CLI tool*
+### *Basic GUI wrapper for the amazing [minipro CLI tool](https://gitlab.com/DavidGriffith/minipro)*
 *(Open source project. Not affiliated with any device manufacturers, nor with the minipro CLI project.)*
 
 ![screenshot.png](res%2Fscreenshot.png)
