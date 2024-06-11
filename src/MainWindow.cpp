@@ -31,8 +31,6 @@ void MainWindow::initializer() {
   device_view->setFont(monospace_font);
   hex_view->setFont(monospace_font);
   status_view->setFont(monospace_font);
-
-  build_default_hex_output();
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
@@ -88,11 +86,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   hex_view->setReadOnly(true);
   status_view->setReadOnly(true);
 
-  window->setWindowIcon(QIcon(":/res/AppIcon.png"));
-
-  window->show();
-
   check_for_minipro();
+  build_default_hex_output();
+
+  window->setWindowIcon(QIcon(":/res/AppIcon.png"));
+  window->show();
 }
 
 MainWindow::~MainWindow() = default;
@@ -255,7 +253,7 @@ void MainWindow::build_default_hex_output() const {
   hex_view->clear();
   QString blank_hex;
   for (int n = 0; n < 16; n++) {
-    blank_hex += "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --  ................\n";
+    blank_hex += default_hex_output + "\n";
   }
   hex_view->setPlainText(blank_hex);
 }
