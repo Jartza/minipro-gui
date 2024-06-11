@@ -13,17 +13,24 @@ env:
   BUILD_TYPE: MinSizeRel
 
 jobs:
-  build:
+  Ubuntu:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Build
+      - name: Build Ubuntu
         shell: bash
         run: |
           sudo apt-get install build-essential ninja-build cmake libgl1-mesa-dev qt6-base-dev -y
-          cmake -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B "./cmake-build-minsizerel"
-          cmake --build ./cmake-build-minsizerel --target minipro-gui -- -j 2
+          cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B "./cmake-build-${BUILD_TYPE}"
+          cmake --build ./cmake-build-${BUILD_TYPE} --target minipro-gui -- -j 2
+
+  MacOS:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build MacOS
+        shell: bash
+        run: |
+          brew install ninja cmake qt
+          cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B "./cmake-build-${BUILD_TYPE}"
+          cmake --build ./cmake-build-${BUILD_TYPE} --target minipro-gui -- -j 2
