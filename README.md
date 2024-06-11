@@ -10,7 +10,7 @@
 ![screenshot.png](res%2Fscreenshot.png)
 ## Installation
 Coming soon to Homebrew, APT, DNF, and other package managers. For now, please build from source.
-## Build
+## Dependencies
 #### MacOS
 
 ```
