@@ -43,7 +43,7 @@ class MainWindow : public QMainWindow {
   virtual ~MainWindow();
 
  private slots:
-  void check_for_programmer(const QString & = "");
+  void check_for_programmer();
   void get_devices();
   void select_device(const QString & = "");
 

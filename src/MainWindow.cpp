@@ -148,7 +148,7 @@ void MainWindow::check_for_minipro() {
   }
 }
 
-void MainWindow::check_for_programmer(const QString &selected_programmer) {
+void MainWindow::check_for_programmer() {
   QStringList arguments;
   arguments << "--presence_check";
 
@@ -184,7 +184,7 @@ void MainWindow::get_devices() {
     arguments << "-l";
 
     devices_list.clear();
-    devices_list << run_process(*status_view, arguments, "stdout").split("\n", Qt::SkipEmptyParts);;
+    devices_list << run_process(*status_view, arguments, "stdout").split("\n", Qt::SkipEmptyParts);
     devices_list.sort();
 
     button_device->addItems(devices_list);
