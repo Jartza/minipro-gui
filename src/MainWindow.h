@@ -41,6 +41,7 @@ class MainWindow : public QMainWindow {
   static QString run_process(QPlainTextEdit &, const QStringList &, const QString &);
   void build_default_hex_output() const;
   QString build_formatted_hex_output() const;
+  void check_for_minipro();
   explicit MainWindow(QWidget *parent = nullptr);
   virtual ~MainWindow();
 
@@ -73,7 +74,6 @@ class MainWindow : public QMainWindow {
   QPushButton *button_update;
 
   void initializer();
-  void check_for_minipro();
 };
 
 #endif //MINIPRO_GUI_MAINWINDOW_H
