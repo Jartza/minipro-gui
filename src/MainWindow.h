@@ -39,6 +39,7 @@ class MainWindow : public QMainWindow {
   QStringList devices_list;
 
   static QString run_process(QPlainTextEdit &, const QStringList &, const QString &);
+  void build_default_hex_output() const;
   explicit MainWindow(QWidget *parent = nullptr);
   virtual ~MainWindow();
 
@@ -73,7 +74,6 @@ class MainWindow : public QMainWindow {
   void initializer();
   void check_for_minipro();
   QString build_formatted_hex_output() const;
-  void build_default_hex_output() const;
 };
 
 #endif //MINIPRO_GUI_MAINWINDOW_H
