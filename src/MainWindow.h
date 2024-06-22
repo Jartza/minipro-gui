@@ -65,7 +65,7 @@ class MainWindow : public QMainWindow {
   QFont monospace_font;
 
   const QString temp_file_name = "temp.bin";
-  const QString default_hex_output = "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --  ................";
+  const QString default_hex_output = "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --   ................";
 
   QPushButton *button_blank;
   QPushButton *button_write;
