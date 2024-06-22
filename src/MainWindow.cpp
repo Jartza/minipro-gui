@@ -263,6 +263,7 @@ QString MainWindow::build_formatted_hex_output() const {
     QFile temp_file(temp_file_name);
     temp_file.open(QFile::ReadOnly);
     QString temp_file_content = QString::fromUtf8(temp_file.readAll().toHex());
+    temp_file.close();
 
     QString formatted_hex_output;
     QString ascii_string_line;

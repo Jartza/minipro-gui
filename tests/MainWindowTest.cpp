@@ -57,8 +57,8 @@ void MainWindowTest::build_default_hex_output_test() {
 
 void MainWindowTest::build_formatted_hex_output_test() {
   // Mock the temp file content
-  QFile tempFile("minipro-gui.app/Contents/MacOS/temp.bin");
-  tempFile.open(QFile::WriteOnly);
+  QFile tempFile("temp.bin");
+  tempFile.open(QFile::ReadWrite);
   tempFile.write("ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789");
   tempFile.close();
 
