@@ -6,8 +6,8 @@ on:
       - 'master'
     paths:
       - tests/**
-#  schedule:
-#    - cron:  '0 0 1 * *'
+  schedule:
+    - cron:  '0 0 1 * *'
 
 env:
   BUILD_TYPE: Debug
