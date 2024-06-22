@@ -11,14 +11,6 @@ class MainWindowTest : public QObject {
  private slots:
   void initTestCase();
   void check_for_minipro_test();
-  void check_for_programmer_test();
-  void get_devices_test();
-  void select_device_test();
-  void check_blank_test();
-  void read_device_test();
-  void write_device_test();
-  void erase_device_test();
-  void update_firmware_test();
   void build_default_hex_output_test();
   void build_formatted_hex_output_test();
 
@@ -39,63 +31,6 @@ void MainWindowTest::check_for_minipro_test() {
   mainWindow->check_for_minipro();
   // Check if minipro_found is set correctly
   QVERIFY(mainWindow->minipro_found);
-}
-
-void MainWindowTest::check_for_programmer_test() {
-  // Mock the minipro command output
-//  QSignalSpy spy(mainWindow->status_view, SIGNAL(appendPlainText(QString)));
-//  mainWindow->run_process(*mainWindow->status_view, QStringList() << "--presence_check", "stderr");
-//  QCOMPARE(spy.count(), 2);
-//  QVERIFY(spy.at(0).at(0).toString().contains("[Input]: minipro --presence_check"));
-//  QVERIFY(spy.at(1).at(0).toString().contains("[Output]: "));
-//
-//  // Check if programmer_found is set correctly
-//  QVERIFY(mainWindow->programmer_found);
-//  QCOMPARE(mainWindow->programmer, QString("Mock Programmer"));
-}
-
-void MainWindowTest::get_devices_test() {
-  // Mock the minipro command output
-//  QSignalSpy spy(mainWindow->status_view, SIGNAL(appendPlainText(QString)));
-//  mainWindow->run_process(*mainWindow->status_view, QStringList() << "-l", "stdout");
-//  QCOMPARE(spy.count(), 2);
-//  QVERIFY(spy.at(0).at(0).toString().contains("[Input]: minipro -l"));
-//  QVERIFY(spy.at(1).at(0).toString().contains("[Output]: "));
-//
-//  // Check if devices_list is populated correctly
-//  QVERIFY(!mainWindow->devices_list.isEmpty());
-}
-
-void MainWindowTest::select_device_test() {
-  // Mock the minipro command output
-//  QSignalSpy spy(mainWindow->device_view, SIGNAL(setPlainText(QString)));
-//  mainWindow->run_process(*mainWindow->device_view, QStringList() << "-d" << "Mock Device", "stderr");
-//  QCOMPARE(spy.count(), 1);
-//  QVERIFY(spy.at(0).at(0).toString().contains("Name: Mock Device"));
-//
-//  // Check if device is set correctly
-//  QCOMPARE(mainWindow->device, QString("Mock Device"));
-}
-
-void MainWindowTest::check_blank_test() {
-  // Mock the minipro command output
-//  QSignalSpy spy(mainWindow->status_view, SIGNAL(appendPlainText(QString)));
-//  mainWindow->run_process(*mainWindow->status_view, QStringList() << "-p" << "Mock Device" << "-b", "stderr");
-//  QCOMPARE(spy.count(), 2);
-//  QVERIFY(spy.at(0).at(0).toString().contains("[Input]: minipro -p Mock Device -b"));
-//  QVERIFY(spy.at(1).at(0).toString().contains("[Output]: "));
-}
-
-void MainWindowTest::read_device_test() {
-  // Mock the minipro command output
-//  QSignalSpy spy(mainWindow->status_view, SIGNAL(appendPlainText(QString)));
-//  mainWindow->run_process(*mainWindow->status_view, QStringList() << "-p" << "Mock Device" << "-r" << "Mock File", "stderr");
-//  QCOMPARE(spy.count(), 2);
-//  QVERIFY(spy.at(0).at(0).toString().contains("[Input]: minipro -p Mock Device -r Mock File"));
-//  QVERIFY(spy.at(1).at(0).toString().contains("[Output]: "));
-//
-//  // Check if hex_view is populated correctly
-//  QVERIFY(!mainWindow->hex_view->toPlainText().isEmpty());
 }
 
 void MainWindowTest::build_default_hex_output_test() {
