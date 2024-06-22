@@ -98,18 +98,6 @@ void MainWindowTest::read_device_test() {
 //  QVERIFY(!mainWindow->hex_view->toPlainText().isEmpty());
 }
 
-void MainWindowTest::write_device_test() {
-  // Mock the minipro command output
-}
-
-void MainWindowTest::erase_device_test() {
-  // Mock the minipro command output
-}
-
-void MainWindowTest::update_firmware_test() {
-
-}
-
 void MainWindowTest::build_default_hex_output_test() {
   // Check if the default hex output is generated correctly
   QString expectedOutput = "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --  ................\n"
