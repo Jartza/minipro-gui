@@ -24,6 +24,3 @@ jobs:
           brew install ninja cmake qt minipro
           cd tests
           ./run_tests.sh
-          ls -la
-          cd minipro-gui.app/Contents/MacOS
-          ls -la
