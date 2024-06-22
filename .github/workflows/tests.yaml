@@ -14,12 +14,12 @@ env:
 
 jobs:
   Ubuntu:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build Ubuntu
+      - name: Build Tests
         shell: bash
         run: |
-          sudo apt-get install build-essential ninja-build cmake libgl1-mesa-dev qt6-base-dev -y
+          brew install ninja cmake qt
           cd tests
           ./run_tests.sh

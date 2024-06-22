@@ -17,7 +17,6 @@ qt_add_executable(${PROJECT_NAME}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-#        WIN32_EXECUTABLE TRUE
         MACOSX_BUNDLE TRUE
 )
 
