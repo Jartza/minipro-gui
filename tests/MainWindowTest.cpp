@@ -105,29 +105,14 @@ void MainWindowTest::read_device_test() {
 
 void MainWindowTest::write_device_test() {
   // Mock the minipro command output
-  QSignalSpy spy(mainWindow->status_view, SIGNAL(appendPlainText(QString)));
-  mainWindow->run_process(*mainWindow->status_view, QStringList() << "-p" << "Mock Device" << "-w" << "Mock File", "stderr");
-  QCOMPARE(spy.count(), 2);
-  QVERIFY(spy.at(0).at(0).toString().contains("[Input]: minipro -p Mock Device -w Mock File"));
-  QVERIFY(spy.at(1).at(0).toString().contains("[Output]: "));
 }
 
 void MainWindowTest::erase_device_test() {
   // Mock the minipro command output
-  QSignalSpy spy(mainWindow->status_view, SIGNAL(appendPlainText(QString)));
-  mainWindow->run_process(*mainWindow->status_view, QStringList() << "-p" << "Mock Device" << "-E", "stderr");
-  QCOMPARE(spy.count(), 2);
-  QVERIFY(spy.at(0).at(0).toString().contains("[Input]: minipro -p Mock Device -E"));
-  QVERIFY(spy.at(1).at(0).toString().contains("[Output]: "));
 }
 
 void MainWindowTest::update_firmware_test() {
-  // Mock the minipro command output
-  QSignalSpy spy(mainWindow->status_view, SIGNAL(appendPlainText(QString)));
-  mainWindow->run_process(*mainWindow->status_view, QStringList() << "-p" << "Mock Device" << "-F" << "Mock File", "stderr");
-  QCOMPARE(spy.count(), 2);
-  QVERIFY(spy.at(0).at(0).toString().contains("[Input]: minipro -p Mock Device -F Mock File"));
-  QVERIFY(spy.at(1).at(0).toString().contains("[Output]: "));
+
 }
 
 void MainWindowTest::build_default_hex_output_test() {

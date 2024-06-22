@@ -21,6 +21,6 @@ jobs:
       - name: Build Tests
         shell: bash
         run: |
-          brew install ninja cmake qt
+          brew install ninja cmake qt minipro
           cd tests
           ./run_tests.sh
