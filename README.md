@@ -1,10 +1,10 @@
 ![minipro.jpg](res%2FAppIcon.ico)
 # MINIPRO-GUI
+[![Unit Tests](https://github.com/twelve-chairs/minipro-gui/actions/workflows/tests.yaml/badge.svg)](https://github.com/twelve-chairs/minipro-gui/actions/workflows/tests.yaml)
 [![Build Ubuntu](https://github.com/twelve-chairs/minipro-gui/actions/workflows/ubuntu.yaml/badge.svg)](https://github.com/twelve-chairs/minipro-gui/actions/workflows/ubuntu.yaml)
 [![Build MacOS](https://github.com/twelve-chairs/minipro-gui/actions/workflows/macos.yaml/badge.svg)](https://github.com/twelve-chairs/minipro-gui/actions/workflows/macos.yaml)
 [![CodeQL](https://github.com/twelve-chairs/minipro-gui/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/twelve-chairs/minipro-gui/actions/workflows/github-code-scanning/codeql) 
 [![Sonar Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=twelve-chairs_minipro-gui&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=twelve-chairs_minipro-gui)
-[![Unit Tests](https://github.com/twelve-chairs/minipro-gui/actions/workflows/tests.yaml/badge.svg)](https://github.com/twelve-chairs/minipro-gui/actions/workflows/tests.yaml)
 
 ### *Basic GUI wrapper for the amazing [minipro CLI tool](https://gitlab.com/DavidGriffith/minipro)*
 *(Open source project. Not affiliated with any device manufacturers, nor with the minipro CLI project.)*
