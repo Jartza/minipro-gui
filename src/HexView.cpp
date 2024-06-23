@@ -19,7 +19,7 @@ QVariant HexView::data(const QModelIndex &index, int role) const {
       return table.at(index.row()).at(index.column());
     }
     case Qt::TextAlignmentRole: {
-      return Qt::AlignCenter;
+      return Qt::AlignVCenter;
     }
     case Qt::FontRole: {
       QFont monospace_font;
