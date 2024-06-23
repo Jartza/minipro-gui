@@ -6,8 +6,8 @@
 [![CodeQL](https://github.com/twelve-chairs/minipro-gui/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/twelve-chairs/minipro-gui/actions/workflows/github-code-scanning/codeql) 
 [![Sonar Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=twelve-chairs_minipro-gui&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=twelve-chairs_minipro-gui)
 
-### *GUI wrapper for the amazing opensource [minipro CLI tool](https://gitlab.com/DavidGriffith/minipro)*
-
+### *GUI wrapper for the [minipro CLI tool](https://gitlab.com/DavidGriffith/minipro)*
+#### A free and open TL866 series programmer
 ![screenshot.png](res%2Fscreenshot.png)
 ## Installation
 Coming soon to package managers. For now, please build from source.
