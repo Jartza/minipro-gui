@@ -10,10 +10,15 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Test Widgets)
 
 qt_standard_project_setup()
 
+file(GLOB H_FILES "../src/*.h")
+file(GLOB CPP_FILES "../src/*.cpp")
+file(GLOB TEST_FILES "*.cpp")
+
 qt_add_executable(${PROJECT_NAME}
-        ../src/MainWindow.h
+        ${H_FILES}
         ../src/MainWindow.cpp
-        MainWindowTest.cpp
+        ../src/HexView.cpp
+        ${TEST_FILES}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
