@@ -6,12 +6,11 @@
 [![CodeQL](https://github.com/twelve-chairs/minipro-gui/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/twelve-chairs/minipro-gui/actions/workflows/github-code-scanning/codeql) 
 [![Sonar Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=twelve-chairs_minipro-gui&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=twelve-chairs_minipro-gui)
 
-### *Basic GUI wrapper for the amazing [minipro CLI tool](https://gitlab.com/DavidGriffith/minipro)*
-*(Open source project. Not affiliated with any device manufacturers, nor with the minipro CLI project.)*
+### *GUI wrapper for the amazing opensource [minipro CLI tool](https://gitlab.com/DavidGriffith/minipro)*
 
 ![screenshot.png](res%2Fscreenshot.png)
 ## Installation
-Coming soon to Homebrew, APT, DNF, and other package managers. For now, please build from source.
+Coming soon to package managers. For now, please build from source.
 ## Dependencies
 #### MacOS
 
@@ -20,7 +19,7 @@ brew install cmake ninja qt6 minipro
 ```
 
 #### Ubuntu / Debian
-Install minipro: https://gitlab.com/DavidGriffith/minipro#install-build-dependencies
+Install minipro CLI (required): https://gitlab.com/DavidGriffith/minipro#install-build-dependencies
 
 ```
 sudo apt-get install build-essential ninja-build cmake libgl1-mesa-dev qt6-base-dev -y
@@ -29,7 +28,7 @@ sudo apt-get install build-essential ninja-build cmake libgl1-mesa-dev qt6-base-
   (*If your OS uses Wayland (e.g. Raspberry PI 5), please also install `qt6-wayland` via apt-get*)
 
 #### Fedora
-Install minipro: https://gitlab.com/DavidGriffith/minipro#install-build-dependencies
+Install minipro CLI (required): https://gitlab.com/DavidGriffith/minipro#install-build-dependencies
 
 ```
 sudo dnf groupinstall "C Development Tools and Libraries"
@@ -37,7 +36,7 @@ sudo dnf install ninja-build cmake mesa-libGL-devel qt6-qtbase-devel -y
 ```
 
 #### openSUSE
-Install minipro: https://gitlab.com/DavidGriffith/minipro#install-build-dependencies
+Install minipro CLI (required): https://gitlab.com/DavidGriffith/minipro#install-build-dependencies
 ```
 sudo zypper install --type pattern devel_basis
 sudo zypper install cmake Mesa-libGL-devel qt6-base-devel -y
