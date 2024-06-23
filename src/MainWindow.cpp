@@ -5,7 +5,7 @@ void MainWindow::initializer() {
   layout = new QGridLayout(window);
 
   window->setWindowTitle("minipro CLI not found!");
-  window->setMinimumSize(940, 480);
+  window->setMinimumSize(950, 480);
 
   minipro_found = false;
   programmer_found = false;
@@ -275,6 +275,7 @@ void MainWindow::build_formatted_hex_output() {
 }
 
 void MainWindow::format_hex_table_columns() {
+  hexTableView->horizontalHeader()->setStretchLastSection(true);
   for (int n = 0; n <= hexViewModel.columnCount(); n++) {
     hexTableView->resizeColumnToContents(n);
   }

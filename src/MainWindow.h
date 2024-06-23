@@ -17,6 +17,7 @@
 #include <QListWidget>
 #include <QGroupBox>
 #include <QComboBox>
+#include <QHeaderView>
 #include <iostream>
 #include "HexView.h"
 
