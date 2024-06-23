@@ -28,7 +28,6 @@ void MainWindow::initializer() {
   monospace_font.setStyleHint(QFont::Monospace);
 
   device_view->setFont(monospace_font);
-//  hexTableView->setFont(monospace_font);
   status_view->setFont(monospace_font);
 }
 
@@ -89,7 +88,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
   check_for_minipro();
   build_default_hex_output();
-  build_formatted_hex_output();
 
   window->setWindowIcon(QIcon(":/res/AppIcon.png"));
   window->show();
@@ -258,7 +256,6 @@ void MainWindow::build_default_hex_output() {
 }
 
 void MainWindow::build_formatted_hex_output() {
-//  build_default_hex_output();
   try {
     QFile temp_file(temp_file_name);
     temp_file.open(QFile::ReadOnly);
