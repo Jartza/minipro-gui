@@ -1,12 +1,13 @@
 ![minipro.jpg](res%2FAppIcon.ico)
 # MINIPRO-GUI
+### *GUI wrapper for the [minipro CLI tool](https://gitlab.com/DavidGriffith/minipro) - a free and open TL866 series programmer*
+
 [![Unit Tests](https://github.com/twelve-chairs/minipro-gui/actions/workflows/tests.yaml/badge.svg)](https://github.com/twelve-chairs/minipro-gui/actions/workflows/tests.yaml)
 [![Build Ubuntu](https://github.com/twelve-chairs/minipro-gui/actions/workflows/ubuntu.yaml/badge.svg)](https://github.com/twelve-chairs/minipro-gui/actions/workflows/ubuntu.yaml)
 [![Build MacOS](https://github.com/twelve-chairs/minipro-gui/actions/workflows/macos.yaml/badge.svg)](https://github.com/twelve-chairs/minipro-gui/actions/workflows/macos.yaml)
 [![CodeQL](https://github.com/twelve-chairs/minipro-gui/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/twelve-chairs/minipro-gui/actions/workflows/github-code-scanning/codeql) 
 [![Sonar Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=twelve-chairs_minipro-gui&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=twelve-chairs_minipro-gui)
 
-### *GUI wrapper for the [minipro CLI tool](https://gitlab.com/DavidGriffith/minipro) - a free and open TL866 series programmer*
 ![screenshot.png](res%2Fscreenshot.png)
 ## Installation
 Coming soon as pre-compiled binary releases. For now, please build from source.
