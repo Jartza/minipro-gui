@@ -5,8 +5,7 @@ void MainWindow::initializer() {
   layout = new QGridLayout(window);
 
   window->setWindowTitle("minipro CLI not found!");
-  window->setMinimumSize(900, 380);
-  statusBar()->showMessage(tr("minipro-gui v0.1"));
+  window->setMinimumSize(940, 480);
 
   minipro_found = false;
   programmer_found = false;
@@ -22,14 +21,14 @@ void MainWindow::initializer() {
   button_device = new QComboBox();
 
   device_view = new QPlainTextEdit(window);
-  hex_view = new QPlainTextEdit(window);
+  hexTableView = new QTableView(window);
   status_view = new QPlainTextEdit(window);
 
   monospace_font.setFamily("Courier New");
   monospace_font.setStyleHint(QFont::Monospace);
 
   device_view->setFont(monospace_font);
-  hex_view->setFont(monospace_font);
+//  hexTableView->setFont(monospace_font);
   status_view->setFont(monospace_font);
 }
 
@@ -70,7 +69,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
   auto *groupBox5 = new QGroupBox(tr("Hex Viewer"));
   auto *vbox5 = new QVBoxLayout;
-  vbox5->addWidget(hex_view);
+
+  hexTableView->setModel(&hexViewModel);
+  hexTableView->show();
+  vbox5->addWidget(hexTableView);
   vbox5->addStretch(1);
   groupBox5->setLayout(vbox5);
   layout->addWidget(groupBox5, 2, 1);
@@ -83,11 +85,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   layout->addWidget(groupBox6, 3, 0, 1, 0);
 
   device_view->setReadOnly(true);
-  hex_view->setReadOnly(true);
   status_view->setReadOnly(true);
 
   check_for_minipro();
   build_default_hex_output();
+  build_formatted_hex_output();
 
   window->setWindowIcon(QIcon(":/res/AppIcon.png"));
   window->show();
@@ -212,14 +214,15 @@ void MainWindow::check_blank() const {
   run_process(*status_view, arguments);
 }
 
-void MainWindow::read_device() const {
-  hex_view->clear();
+void MainWindow::read_device() {
+  hexViewModel.clearHexTable();
+
   QStringList arguments;
   arguments << "-p" << device << "-r" << temp_file_name;
 
   if (!run_process(*status_view, arguments).contains("Unsupported device")
       && !run_process(*status_view, arguments).contains("Invalid Chip ID")) {
-    hex_view->setPlainText(build_formatted_hex_output());
+    build_formatted_hex_output();
   } else {
     build_default_hex_output();
   }
@@ -249,57 +252,33 @@ void MainWindow::update_firmware() {
   }
 }
 
-void MainWindow::build_default_hex_output() const {
-  hex_view->clear();
-  QString blank_hex;
-  for (int n = 0; n < 16; n++) {
-    blank_hex += default_hex_output + "\n";
-  }
-  hex_view->setPlainText(blank_hex);
+void MainWindow::build_default_hex_output() {
+  hexViewModel.clearHexTable();
+  format_hex_table_columns();
 }
 
-QString MainWindow::build_formatted_hex_output() const {
+void MainWindow::build_formatted_hex_output() {
+//  build_default_hex_output();
   try {
     QFile temp_file(temp_file_name);
     temp_file.open(QFile::ReadOnly);
     QString temp_file_content = QString::fromUtf8(temp_file.readAll().toHex());
     temp_file.close();
 
-    QString formatted_hex_output;
-    QString ascii_string_line;
+    hexViewModel.buildHexTable(temp_file_content);
 
-    const int chars_per_line = 32; // (16 bytes * 2)
-    int line_counter = 0;
-
-    for (int i = 0; i <= temp_file_content.length(); i++) {
-      // Parse hex values, and convert to ASCII
-      if (i % 2 != 0) {
-        QString byte_string = QChar(temp_file_content[i - 1]);
-        byte_string += QChar(temp_file_content[i]);
-
-        formatted_hex_output += (byte_string.toUpper() += " ");
-
-        auto ascii_int = byte_string.toUInt(nullptr, 16);
-        // Non-extended ASCII only
-        if (ascii_int > 126) ascii_int = 46;
-        auto ascii_char = QChar(ascii_int);
-        // Printable characters only
-        if (!ascii_char.isPrint() || ascii_char.isNull()) {
-          ascii_char = '.';
-        }
-        ascii_string_line += ascii_char;
-      }
-      // Next 16-byte line
-      if (i != 0 && i % chars_per_line == 0) {
-        formatted_hex_output += "  " + ascii_string_line + "\n";
-        ascii_string_line.clear();
-        line_counter++;
-      }
-    }
-    return formatted_hex_output;
   }
   catch (const std::exception &e) {
     status_view->appendPlainText("\n[Error]: " + static_cast<QString>(e.what()));
-    return default_hex_output;
+  }
+  format_hex_table_columns();
+}
+
+void MainWindow::format_hex_table_columns() {
+  for (int n = 0; n <= hexViewModel.columnCount(); n++) {
+    hexTableView->resizeColumnToContents(n);
+  }
+  for (int n = 0; n <= hexViewModel.rowCount(); n++) {
+    hexTableView->resizeRowToContents(n);
   }
 }

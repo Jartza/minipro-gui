@@ -13,10 +13,12 @@
 #include <QFileDialog>
 #include <QtDebug>
 #include <QFile>
+#include <QTableView>
 #include <QListWidget>
 #include <QGroupBox>
 #include <QComboBox>
 #include <iostream>
+#include "HexView.h"
 
 class MainWindow : public QMainWindow {
  Q_OBJECT
@@ -33,15 +35,18 @@ class MainWindow : public QMainWindow {
 
   QPlainTextEdit *status_view;
   QPlainTextEdit *device_view;
-  QPlainTextEdit *hex_view;
+//  QPlainTextEdit *hex_view;
+  QTableView *hexTableView;
+  HexView hexViewModel;
 
   QStringList programmers_list;
   QStringList devices_list;
 
   static QString run_process(QPlainTextEdit &, const QStringList &, const QString &);
-  void build_default_hex_output() const;
-  QString build_formatted_hex_output() const;
+  void build_default_hex_output();
+  void build_formatted_hex_output();
   void check_for_minipro();
+
   explicit MainWindow(QWidget *parent = nullptr);
   virtual ~MainWindow();
 
@@ -51,7 +56,7 @@ class MainWindow : public QMainWindow {
   void select_device(const QString & = "");
 
   void check_blank() const;
-  void read_device() const;
+  void read_device();
   void write_device();
   void erase_device() const;
   void update_firmware();
@@ -74,6 +79,7 @@ class MainWindow : public QMainWindow {
   QPushButton *button_update;
 
   void initializer();
+  void format_hex_table_columns();
 };
 
 #endif //MINIPRO_GUI_MAINWINDOW_H

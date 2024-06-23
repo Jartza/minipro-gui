@@ -2,7 +2,7 @@
 #include "MainWindow.h"
 
 int main(int argc, char *argv[]) {
-  QApplication a(argc, argv);
+  QApplication application(argc, argv);
   QGuiApplication::setWindowIcon(QIcon(":/res/AppIcon.png"));
   QCoreApplication::setOrganizationName("Twelve Chairs");
   QCoreApplication::setOrganizationDomain("twelve-chairs");
@@ -10,5 +10,5 @@ int main(int argc, char *argv[]) {
 
   MainWindow window;
 
-  return QApplication::exec();
+  return application.exec();
 }
