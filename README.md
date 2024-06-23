@@ -9,7 +9,7 @@
 ### *GUI wrapper for the [minipro CLI tool](https://gitlab.com/DavidGriffith/minipro) - a free and open TL866 series programmer*
 ![screenshot.png](res%2Fscreenshot.png)
 ## Installation
-Coming soon to package managers. For now, please build from source.
+Coming soon as pre-compiled binary releases. For now, please build from source.
 ## Dependencies
 #### MacOS
 
