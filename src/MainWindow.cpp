@@ -178,12 +178,12 @@ void MainWindow::disable_buttons(){
 }
 
 void MainWindow::enable_buttons(){
-  button_device->setDisabled(true);
-  button_blank->setDisabled(true);
-  button_read->setDisabled(true);
-  button_write->setDisabled(true);
-  button_erase->setDisabled(true);
-  button_update->setDisabled(true);
+  button_device->setDisabled(false);
+  button_blank->setDisabled(false);
+  button_read->setDisabled(false);
+  button_write->setDisabled(false);
+  button_erase->setDisabled(false);
+  button_update->setDisabled(false);
 }
 
 void MainWindow::get_devices() {
