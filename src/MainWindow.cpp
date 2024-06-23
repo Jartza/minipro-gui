@@ -160,11 +160,11 @@ void MainWindow::check_for_programmer() {
     programmer = match.captured(0);
     programmer_found = true;
     button_programmer->addItem(programmer);
-    disable_buttons();
+    enable_buttons();
   } else {
     button_programmer->setPlaceholderText("No programmer found");
     programmer_found = false;
-    enable_buttons();
+    disable_buttons();
   }
 }
 
