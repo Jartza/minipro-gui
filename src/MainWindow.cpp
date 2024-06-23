@@ -271,15 +271,14 @@ void MainWindow::build_formatted_hex_output() {
     temp_file.close();
 
     hexViewModel.buildHexTable(temp_file_content);
-
+    format_hex_table_columns();
   }
   catch (const std::exception &e) {
     status_view->appendPlainText("\n[Error]: " + static_cast<QString>(e.what()));
   }
-  format_hex_table_columns();
 }
 
-void MainWindow::format_hex_table_columns() {
+void MainWindow::format_hex_table_columns() const {
   hexTableView->horizontalHeader()->setStretchLastSection(true);
   for (int n = 0; n <= hexViewModel.columnCount(); n++) {
     hexTableView->resizeColumnToContents(n);

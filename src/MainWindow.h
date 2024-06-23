@@ -36,7 +36,6 @@ class MainWindow : public QMainWindow {
 
   QPlainTextEdit *status_view;
   QPlainTextEdit *device_view;
-//  QPlainTextEdit *hex_view;
   QTableView *hexTableView;
   HexView hexViewModel;
 
@@ -71,7 +70,6 @@ class MainWindow : public QMainWindow {
   QFont monospace_font;
 
   const QString temp_file_name = "temp.bin";
-  const QString default_hex_output = "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --   ................";
 
   QPushButton *button_blank;
   QPushButton *button_write;
@@ -80,7 +78,7 @@ class MainWindow : public QMainWindow {
   QPushButton *button_update;
 
   void initializer();
-  void format_hex_table_columns();
+  void format_hex_table_columns() const;
   void disable_buttons();
   void enable_buttons();
 };
