@@ -86,6 +86,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   device_view->setReadOnly(true);
   status_view->setReadOnly(true);
 
+  disable_buttons();
   check_for_minipro();
   build_default_hex_output();
 
@@ -131,7 +132,6 @@ QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
 }
 
 void MainWindow::check_for_minipro() {
-  button_programmer->setDisabled(true);
   QStringList arguments;
   arguments << "--version";
   QString initial_check_error = run_process(*status_view, arguments);
@@ -141,9 +141,11 @@ void MainWindow::check_for_minipro() {
     if (match.hasMatch()) {
       window->setWindowTitle(match.captured(0).trimmed());
       minipro_found = true;
-      button_programmer->setDisabled(false);
       check_for_programmer();
       get_devices();
+    }
+    else {
+      button_programmer->setDisabled(true);
     }
   }
 }
@@ -158,24 +160,30 @@ void MainWindow::check_for_programmer() {
     programmer = match.captured(0);
     programmer_found = true;
     button_programmer->addItem(programmer);
-    button_programmer->setDisabled(true);
-    button_device->setDisabled(false);
-    button_blank->setDisabled(false);
-    button_read->setDisabled(false);
-    button_write->setDisabled(false);
-    button_erase->setDisabled(false);
-    button_update->setDisabled(false);
+    disable_buttons();
   } else {
     button_programmer->setPlaceholderText("No programmer found");
-    button_programmer->setDisabled(true);
     programmer_found = false;
-    button_device->setDisabled(true);
-    button_blank->setDisabled(true);
-    button_read->setDisabled(true);
-    button_write->setDisabled(true);
-    button_erase->setDisabled(true);
-    button_update->setDisabled(true);
+    enable_buttons();
   }
+}
+
+void MainWindow::disable_buttons(){
+  button_device->setDisabled(true);
+  button_blank->setDisabled(true);
+  button_read->setDisabled(true);
+  button_write->setDisabled(true);
+  button_erase->setDisabled(true);
+  button_update->setDisabled(true);
+}
+
+void MainWindow::enable_buttons(){
+  button_device->setDisabled(true);
+  button_blank->setDisabled(true);
+  button_read->setDisabled(true);
+  button_write->setDisabled(true);
+  button_erase->setDisabled(true);
+  button_update->setDisabled(true);
 }
 
 void MainWindow::get_devices() {

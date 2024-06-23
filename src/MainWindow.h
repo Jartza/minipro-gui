@@ -81,6 +81,8 @@ class MainWindow : public QMainWindow {
 
   void initializer();
   void format_hex_table_columns();
+  void disable_buttons();
+  void enable_buttons();
 };
 
 #endif //MINIPRO_GUI_MAINWINDOW_H
