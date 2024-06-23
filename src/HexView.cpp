@@ -23,7 +23,7 @@ QVariant HexView::data(const QModelIndex &index, int role) const {
     }
     case Qt::FontRole: {
       QFont monospace_font;
-      monospace_font.setFamily("System Mono");
+      monospace_font.setFamily("Courier New");
       monospace_font.setStyleHint(QFont::Monospace);
       return monospace_font;
     }
