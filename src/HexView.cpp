@@ -19,11 +19,11 @@ QVariant HexView::data(const QModelIndex &index, int role) const {
       return table.at(index.row()).at(index.column());
     }
     case Qt::TextAlignmentRole: {
-      return Qt::AlignVCenter;
+      return Qt::AlignCenter;
     }
     case Qt::FontRole: {
       QFont monospace_font;
-      monospace_font.setFamily("Courier New");
+      monospace_font.setFamily("System Mono");
       monospace_font.setStyleHint(QFont::Monospace);
       return monospace_font;
     }
