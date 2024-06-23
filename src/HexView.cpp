@@ -18,6 +18,9 @@ QVariant HexView::data(const QModelIndex &index, int role) const {
     case Qt::DisplayRole: {
       return table.at(index.row()).at(index.column());
     }
+    case Qt::TextAlignmentRole: {
+      return Qt::AlignCenter;
+    }
     case Qt::FontRole: {
       QFont monospace_font;
       monospace_font.setFamily("Courier New");
