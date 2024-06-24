@@ -117,14 +117,14 @@ QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
     output += process->readAllStandardError();
     QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
     if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
-      output = match.captured(1);
+      output = match.captured(1).trimmed();
     }
     target_plain_text_edit.appendPlainText("[Output]: " + output);
   } else if (type == "stdout") {
     output += process->readAllStandardOutput();
     QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
     if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
-      output = match.captured(1);
+      output = match.captured(1).trimmed();
     }
   }
   target_plain_text_edit.ensureCursorVisible();
@@ -143,8 +143,7 @@ void MainWindow::check_for_minipro() {
       minipro_found = true;
       check_for_programmer();
       get_devices();
-    }
-    else {
+    } else {
       button_programmer->setDisabled(true);
     }
   }
@@ -168,7 +167,7 @@ void MainWindow::check_for_programmer() {
   }
 }
 
-void MainWindow::disable_buttons(){
+void MainWindow::disable_buttons() {
   button_device->setDisabled(true);
   button_blank->setDisabled(true);
   button_read->setDisabled(true);
@@ -177,7 +176,7 @@ void MainWindow::disable_buttons(){
   button_update->setDisabled(true);
 }
 
-void MainWindow::enable_buttons(){
+void MainWindow::enable_buttons() {
   button_device->setDisabled(false);
   button_blank->setDisabled(false);
   button_read->setDisabled(false);
