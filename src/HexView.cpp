@@ -1,8 +1,9 @@
 #include "HexView.h"
 
-//Constructor implementation
 HexView::HexView(QObject *parent) : QAbstractTableModel(parent) {
   clearHexTable();
+  monospace_font.setFamily("Courier New");
+  monospace_font.setStyleHint(QFont::Monospace);
 }
 
 int HexView::rowCount(const QModelIndex &) const {
@@ -22,9 +23,6 @@ QVariant HexView::data(const QModelIndex &index, int role) const {
       return Qt::AlignCenter;
     }
     case Qt::FontRole: {
-      QFont monospace_font;
-      monospace_font.setFamily("Courier New");
-      monospace_font.setStyleHint(QFont::Monospace);
       return monospace_font;
     }
     default:break;
@@ -132,7 +130,3 @@ void HexView::buildHexTable(QString temp_file_content) {
   table = new_hex_table;
   endResetModel();
 }
-
-//void refresh_table_view(){
-//  emit layoutChanged();
-//}
