@@ -41,7 +41,6 @@ class MainWindow : public QMainWindow {
   HexView hexViewModel;
 
   QStringList programmers_list;
-  QSet<QString> devices_set;
   QStringList devices_list;
 
   static QString run_process(QPlainTextEdit &, const QStringList &, const QString &);
@@ -67,7 +66,6 @@ class MainWindow : public QMainWindow {
   QWidget *window;
 
   QGridLayout *layout;
-  QGridLayout *devices_layout;
 
   QFont monospace_font;
 
