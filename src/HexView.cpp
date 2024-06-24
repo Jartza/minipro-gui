@@ -83,7 +83,6 @@ void HexView::buildHexTable(QString temp_file_content) {
   QVector<QVector<QString>> new_hex_table;
 
   const int chars_per_line = 32; // (16 bytes * 2)
-  int line_counter = 0;
   QVector<QString> next_row;
 
   for (int i = 0; i <= temp_file_content.length(); i++) {
@@ -110,7 +109,6 @@ void HexView::buildHexTable(QString temp_file_content) {
       next_row.append(ascii_string_line);
       new_hex_table.append(next_row);
       ascii_string_line.clear();
-      line_counter++;
     }
   }
   table = new_hex_table;
