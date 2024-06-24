@@ -35,42 +35,28 @@ QVariant HexView::headerData(int section, Qt::Orientation orientation, int role)
   if (role != Qt::DisplayRole) {
     return QVariant();
   }
-  if (orientation == Qt::Horizontal && section == 0) {
-    return "00";
-  } else if (orientation == Qt::Horizontal && section == 1) {
-    return "01";
-  } else if (orientation == Qt::Horizontal && section == 2) {
-    return "02";
-  } else if (orientation == Qt::Horizontal && section == 3) {
-    return "03";
-  } else if (orientation == Qt::Horizontal && section == 4) {
-    return "04";
-  } else if (orientation == Qt::Horizontal && section == 5) {
-    return "05";
-  } else if (orientation == Qt::Horizontal && section == 6) {
-    return "06";
-  } else if (orientation == Qt::Horizontal && section == 7) {
-    return "07";
-  } else if (orientation == Qt::Horizontal && section == 8) {
-    return "08";
-  } else if (orientation == Qt::Horizontal && section == 9) {
-    return "09";
-  } else if (orientation == Qt::Horizontal && section == 10) {
-    return "0A";
-  } else if (orientation == Qt::Horizontal && section == 11) {
-    return "0B";
-  } else if (orientation == Qt::Horizontal && section == 12) {
-    return "0C";
-  } else if (orientation == Qt::Horizontal && section == 13) {
-    return "0D";
-  } else if (orientation == Qt::Horizontal && section == 14) {
-    return "0E";
-  } else if (orientation == Qt::Horizontal && section == 15) {
-    return "0F";
-  } else if (orientation == Qt::Horizontal && section == 16) {
-    return "ASCII";
+  if (orientation == Qt::Horizontal) {
+    switch (section) {
+      case 0:return "00";
+      case 1:return "01";
+      case 2:return "02";
+      case 3:return "03";
+      case 4:return "04";
+      case 5:return "05";
+      case 6:return "06";
+      case 7:return "07";
+      case 8:return "08";
+      case 9:return "09";
+      case 10:return "0A";
+      case 11:return "0B";
+      case 12:return "0C";
+      case 13:return "0D";
+      case 14:return "0E";
+      case 15:return "0F";
+      case 16:return "ASCII";
+      default:break;
+    }
   }
-
   if (orientation == Qt::Vertical) {
     return QVariant::fromValue(section + 1);
   }
