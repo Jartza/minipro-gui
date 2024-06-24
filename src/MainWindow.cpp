@@ -99,29 +99,29 @@ MainWindow::~MainWindow() = default;
 QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
                                 const QStringList &process_arguments,
                                 const QString &type = "stderr") {
-  QProcess process;
+  auto *process = new QProcess();
   QString process_arguments_string = "";
   for (auto const &each : process_arguments) {
     process_arguments_string += each + " ";
   }
   target_plain_text_edit.appendPlainText("[Input]: minipro " + process_arguments_string);
-  process.start("minipro", process_arguments);
+  process->start("minipro", process_arguments);
   QString output = "";
-  if (!process.waitForStarted()) {
+  if (!process->waitForStarted()) {
     output += "Start Error";
   }
-  if (!process.waitForFinished()) {
+  if (!process->waitForFinished()) {
     output += "Finished Error";
   }
   if (type == "stderr") {
-    output += process.readAllStandardError();
+    output += process->readAllStandardError();
     QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
     if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
       output = match.captured(1);
     }
     target_plain_text_edit.appendPlainText("[Output]: " + output);
   } else if (type == "stdout") {
-    output += process.readAllStandardOutput();
+    output += process->readAllStandardOutput();
     QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
     if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
       output = match.captured(1);
@@ -134,7 +134,7 @@ QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
 void MainWindow::check_for_minipro() {
   QStringList arguments;
   arguments << "--version";
-  QString initial_check_error = run_process(*status_view, arguments);
+  auto initial_check_error = run_process(*status_view, arguments);
   if (initial_check_error.length() > 0 && initial_check_error.contains("minipro version")) {
     QRegularExpression re("minipro version.*\\n");
     QRegularExpressionMatch match = re.match(initial_check_error);
@@ -194,6 +194,7 @@ void MainWindow::get_devices() {
     devices_list.clear();
     devices_list << run_process(*status_view, arguments, "stdout").split("\n", Qt::SkipEmptyParts);
     devices_list.sort();
+    devices_list.removeDuplicates();
 
     button_device->addItems(devices_list);
   }
@@ -226,8 +227,8 @@ void MainWindow::read_device() {
   QStringList arguments;
   arguments << "-p" << device << "-r" << temp_file_name;
 
-  if (!run_process(*status_view, arguments).contains("Unsupported device")
-      && !run_process(*status_view, arguments).contains("Invalid Chip ID")) {
+  auto output = run_process(*status_view, arguments);
+  if (!output.contains("Unsupported device") && !output.contains("Invalid Chip ID")) {
     build_formatted_hex_output();
   } else {
     build_default_hex_output();
