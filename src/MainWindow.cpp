@@ -133,6 +133,33 @@ void MainWindow::initializer() {
   status_view->setFont(monospace_font);
 }
 
+void MainWindow::run_async_process(const QStringList &process_arguments,
+                                   const QString &type = "stderr") {
+  async_process = new QProcess();
+  QString process_arguments_string = "";
+  for (auto const &each : process_arguments) {
+    process_arguments_string += each + " ";
+  }
+  status_view->appendPlainText("[Input]: minipro " + process_arguments_string);
+  if (type == "stderr") {
+    connect(async_process, SIGNAL(readyReadStandardError()), this, SLOT(async_process_err_output()));
+  } else if (type == "stdout") {
+    connect(async_process, SIGNAL(readyReadStandardOutput()), this, SLOT(async_process_std_output()));
+  }
+  connect(async_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(read_device_output(int, QProcess::ExitStatus)));
+
+  status_view->appendPlainText("[Output]: ");
+  async_process->start("minipro", process_arguments);
+}
+
+void MainWindow::async_process_err_output() {
+  status_view->appendPlainText(async_process->readAllStandardError().trimmed());
+}
+
+void MainWindow::async_process_std_output() {
+  status_view->appendPlainText(async_process->readAllStandardOutput().trimmed());
+}
+
 QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
                                 const QStringList &process_arguments,
                                 const QString &type = "stderr") {
@@ -283,13 +310,14 @@ void MainWindow::check_blank() const {
 }
 
 void MainWindow::read_device() {
-  hexViewModel.clearHexTable();
-
   QStringList arguments;
   arguments << "-p" << device << "-r" << temp_file_name;
+  run_async_process(arguments);
+}
 
-  auto output = run_process(*status_view, arguments);
-  if (!output.contains("Unsupported device") && !output.contains("Invalid Chip ID")) {
+void MainWindow::read_device_output(int code, QProcess::ExitStatus) {
+  hexViewModel.clearHexTable();
+  if (code != 1) {
     build_formatted_hex_output();
   } else {
     build_default_hex_output();
@@ -301,14 +329,14 @@ void MainWindow::write_device() {
   if (fileName != "") {
     QStringList arguments;
     arguments << "-p" << device << "-w" << fileName;
-    run_process(*status_view, arguments);
+    run_async_process(arguments);
   }
 }
 
-void MainWindow::erase_device() const {
+void MainWindow::erase_device() {
   QStringList arguments;
   arguments << "-p" << device << "-E";
-  run_process(*status_view, arguments);
+  run_async_process(arguments);
 }
 
 void MainWindow::update_firmware() {
@@ -316,7 +344,7 @@ void MainWindow::update_firmware() {
   if (fileName != "") {
     QStringList arguments;
     arguments << "-p" << device << "-F" << fileName;
-    run_process(*status_view, arguments);
+    run_async_process(arguments);
   }
 }
 

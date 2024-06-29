@@ -60,7 +60,11 @@ class MainWindow : public QMainWindow {
   QStringList programmers_list;
   QStringList devices_list;
 
+  QProcess *async_process;
+
   static QString run_process(QPlainTextEdit &, const QStringList &, const QString &);
+  void run_async_process(const QStringList &, const QString &);
+
   void build_default_hex_output();
   void build_formatted_hex_output();
   void check_for_minipro();
@@ -72,11 +76,14 @@ class MainWindow : public QMainWindow {
   void check_for_programmer();
   void get_devices();
   void select_device(const QString & = "");
+  void async_process_err_output();
+  void async_process_std_output();
+  void read_device_output(int, QProcess::ExitStatus);
 
   void check_blank() const;
   void read_device();
   void write_device();
-  void erase_device() const;
+  void erase_device();
   void update_firmware();
 
  private:
@@ -98,6 +105,7 @@ class MainWindow : public QMainWindow {
   void format_hex_table_columns() const;
   void disable_buttons();
   void enable_buttons();
+
 };
 
 #endif //MINIPRO_GUI_MAINWINDOW_H
