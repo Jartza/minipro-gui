@@ -147,9 +147,9 @@ void MainWindow::run_async_process(const QStringList &process_arguments,
     connect(async_process, SIGNAL(readyReadStandardOutput()), this, SLOT(async_process_std_output()));
   }
   connect(async_process,
-          SIGNAL(finished(int, QProcess::ExitStatus)),
+          SIGNAL(finished(int,QProcess::ExitStatus)),
           this,
-          SLOT(read_device_output(int, QProcess::ExitStatus)));
+          SLOT(read_device_output(int,QProcess::ExitStatus)));
 
   status_view->appendPlainText("[Output]: ");
   async_process->start("minipro", process_arguments);
