@@ -4,32 +4,31 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   initializer();
 
   auto *groupBox = new QGroupBox(tr("Targets"));
-  auto *vbox = new QVBoxLayout;
-  vbox->addWidget(button_programmer);
-  vbox->addWidget(button_device);
+  auto *vbox = new QGridLayout;
+  vbox->addWidget(button_programmer, 0, 0);
+  vbox->addWidget(button_update, 0, 1);
+  connect(button_update, SIGNAL (released()), this, SLOT (update_firmware()));
+  vbox->addWidget(button_device, 1, 0, 1, 0);
   connect(button_device, SIGNAL (currentTextChanged(QString)), this, SLOT (select_device(QString)));
-  vbox->addStretch(1);
   groupBox->setLayout(vbox);
   layout->addWidget(groupBox, 0, 0);
 
   auto *groupBox3 = new QGroupBox(tr("Actions"));
   auto *vbox3 = new QGridLayout;
-  vbox3->addWidget(button_run_command, 0, 0, 1, 0);
+  vbox3->addWidget(pin_check, 0, 0);
+  vbox3->addWidget(blank_check, 0, 1);
+  vbox3->addWidget(erase_device, 1, 0);
+  vbox3->addWidget(hardware_check, 1, 1);
+  vbox3->addWidget(button_run_command, 2, 0, 1, 0);
   connect(button_run_command, SIGNAL (released()), this, SLOT (run_command()));
-  vbox3->addWidget(button_read, 1, 0, 1, 0);
-  connect(button_read, SIGNAL (released()), this, SLOT (read_device()));
-  vbox3->addWidget(button_write, 2, 0, 1, 0);
-  connect(button_write, SIGNAL (released()), this, SLOT (write_device()));
-  vbox3->addWidget(button_update, 3, 0, 1, 0);
-  connect(button_update, SIGNAL (released()), this, SLOT (update_firmware()));
   vbox3->addWidget(no_id_error, 4, 0);
   vbox3->addWidget(skip_id, 5, 0);
-  vbox3->addWidget(no_size_error, 6, 0);
-  vbox3->addWidget(skip_verify, 7, 0);
-  vbox3->addWidget(pin_check, 4, 1);
-  vbox3->addWidget(blank_check, 5, 1);
-  vbox3->addWidget(erase_device, 6, 1);
-  vbox3->addWidget(hardware_check, 7, 1);
+  vbox3->addWidget(no_size_error, 4, 1);
+  vbox3->addWidget(skip_verify, 5, 1);
+  vbox3->addWidget(button_read, 6, 0);
+  connect(button_read, SIGNAL (released()), this, SLOT (read_device()));
+  vbox3->addWidget(button_write, 6, 1);
+  connect(button_write, SIGNAL (released()), this, SLOT (write_device()));
   groupBox3->setLayout(vbox3);
   layout->addWidget(groupBox3, 2, 0);
 
@@ -142,12 +141,13 @@ void MainWindow::run_async_process(const QStringList &process_arguments,
                                    const QString &type = "stderr") {
   async_process = new QProcess();
   QString process_arguments_string = "";
-  for (auto const &each : process_arguments) {
-    process_arguments_string += each + " ";
-  }
   for (auto const &each : parse_checkboxes()){
     process_arguments_string += each + " ";
   }
+  for (auto const &each : process_arguments) {
+    process_arguments_string += each + " ";
+  }
+
   status_view->appendPlainText("[Input]: minipro " + process_arguments_string);
   if (type == "stderr") {
     connect(async_process, SIGNAL(readyReadStandardError()), this, SLOT(async_process_err_output()));
@@ -179,7 +179,7 @@ QStringList MainWindow::parse_checkboxes() {
   if (skip_verify->isChecked()) arguments.append("--skip_verify");
   if (pin_check->isChecked()) arguments.append("--pin_check");
   if (blank_check->isChecked()) arguments.append("--blank_check");
-  if (erase_device->isChecked()) arguments.append("--erase_device");
+  if (erase_device->isChecked()) arguments.append("--erase");
   if (hardware_check->isChecked()) arguments.append("--hardware_check");
   return arguments;
 }

@@ -37,6 +37,9 @@ class MainWindow : public QMainWindow {
   QDialog device_selector;
   QComboBox *button_programmer;
   QComboBox *button_device;
+  QComboBox *vpp;
+  QComboBox *vdd;
+  QComboBox *vcc;
 
   QCheckBox *no_id_error;
   QCheckBox *skip_id;
