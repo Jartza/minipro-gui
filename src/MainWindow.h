@@ -16,10 +16,12 @@
 #include <QSet>
 #include <QTableView>
 #include <QListWidget>
+#include <QLineEdit>
 #include <QGroupBox>
 #include <QComboBox>
 #include <QHeaderView>
 #include <iostream>
+#include <array>
 #include "HexView.h"
 
 class MainWindow : public QMainWindow {
@@ -36,7 +38,22 @@ class MainWindow : public QMainWindow {
   QComboBox *button_device;
 
   QPlainTextEdit *status_view;
-  QPlainTextEdit *device_view;
+
+  QLabel *device_name_label;
+  QLineEdit *device_name;
+  QLabel *device_memory_label;
+  QLineEdit *device_memory;
+  QLabel *device_package_label;
+  QLineEdit *device_package;
+  QLabel *device_protocol_label;
+  QLineEdit *device_protocol;
+  QLabel *device_readbuffer_label;
+  QLineEdit *device_readbuffer;
+  QLabel *device_writebuffer_label;
+  QLineEdit *device_writebuffer;
+  QLineEdit *device_other;
+
+
   QTableView *hexTableView;
   HexView hexViewModel;
 

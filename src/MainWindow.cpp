@@ -1,36 +1,5 @@
 #include "MainWindow.h"
 
-void MainWindow::initializer() {
-  window = new QWidget;
-  layout = new QGridLayout(window);
-
-  window->setWindowTitle("minipro CLI not found!");
-  window->setMinimumSize(1000, 500);
-
-  minipro_found = false;
-  programmer_found = false;
-
-  button_programmer = new QComboBox;
-
-  button_blank = new QPushButton("Blank Check");
-  button_write = new QPushButton("Write to Device");
-  button_read = new QPushButton("Read from Device");
-  button_erase = new QPushButton("Erase Device");
-  button_update = new QPushButton("Update Firmware");
-
-  button_device = new QComboBox();
-
-  device_view = new QPlainTextEdit(window);
-  hexTableView = new QTableView(window);
-  status_view = new QPlainTextEdit(window);
-
-  monospace_font.setFamily("Courier New");
-  monospace_font.setStyleHint(QFont::Monospace);
-
-  device_view->setFont(monospace_font);
-  status_view->setFont(monospace_font);
-}
-
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   initializer();
 
@@ -60,9 +29,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   layout->addWidget(groupBox3, 2, 0);
 
   auto *groupBox4 = new QGroupBox(tr("Device Info"));
-  auto *vbox4 = new QVBoxLayout;
-  vbox4->addWidget(device_view);
-  vbox4->addStretch(1);
+  auto *vbox4 = new QGridLayout;
+  vbox4->addWidget(device_name_label, 0, 0);
+  vbox4->addWidget(device_name, 0, 1);
+  vbox4->addWidget(device_memory_label, 1, 0);
+  vbox4->addWidget(device_memory, 1, 1);
+  vbox4->addWidget(device_package_label, 2, 0);
+  vbox4->addWidget(device_package, 2, 1);
+
+  vbox4->addWidget(device_protocol_label, 0, 2);
+  vbox4->addWidget(device_protocol, 0, 3);
+  vbox4->addWidget(device_readbuffer_label, 1, 2);
+  vbox4->addWidget(device_readbuffer, 1, 3);
+  vbox4->addWidget(device_writebuffer_label, 2, 2);
+  vbox4->addWidget(device_writebuffer, 2, 3);
+//  vbox4->addWidget(device_other);
+//  vbox4->addWidget(device_view);
+//  vbox4->addStretch(1);
   groupBox4->setLayout(vbox4);
   layout->addWidget(groupBox4, 0, 1);
 
@@ -83,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   groupBox6->setLayout(vbox6);
   layout->addWidget(groupBox6, 3, 0, 1, 0);
 
-  device_view->setReadOnly(true);
+//  device_view->setReadOnly(true);
   status_view->setReadOnly(true);
 
   disable_buttons();
@@ -95,6 +78,60 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 }
 
 MainWindow::~MainWindow() = default;
+
+void MainWindow::initializer() {
+  window = new QWidget;
+  layout = new QGridLayout(window);
+
+  window->setWindowTitle("minipro CLI not found!");
+  window->setMinimumSize(1000, 500);
+
+  minipro_found = false;
+  programmer_found = false;
+
+  button_programmer = new QComboBox;
+
+  button_blank = new QPushButton("Blank Check");
+  button_write = new QPushButton("Write to Device");
+  button_read = new QPushButton("Read from Device");
+  button_erase = new QPushButton("Erase Device");
+  button_update = new QPushButton("Update Firmware");
+
+  button_device = new QComboBox();
+
+//  device_view = new QPlainTextEdit(window);
+
+  device_name_label = new QLabel("Name");
+  device_name = new QLineEdit();
+  device_name->setReadOnly(true);
+//  device_name->setAlignment(Qt::AlignCenter);
+  device_memory_label = new QLabel("Memory");
+  device_memory = new QLineEdit();
+  device_memory->setReadOnly(true);
+  device_package_label = new QLabel("Package");
+  device_package = new QLineEdit();
+  device_package->setReadOnly(true);
+  device_protocol_label = new QLabel("Protocol");
+  device_protocol = new QLineEdit();
+  device_protocol->setReadOnly(true);
+  device_readbuffer_label = new QLabel("Read Buffer");
+  device_readbuffer = new QLineEdit();
+  device_readbuffer->setReadOnly(true);
+  device_writebuffer_label = new QLabel("Write Buffer");
+  device_writebuffer = new QLineEdit();
+  device_writebuffer->setReadOnly(true);
+//  device_other = new QLineEdit();
+
+
+  hexTableView = new QTableView(window);
+  status_view = new QPlainTextEdit(window);
+
+  monospace_font.setFamily("Courier New");
+  monospace_font.setStyleHint(QFont::Monospace);
+
+//  device_view->setFont(monospace_font);
+  status_view->setFont(monospace_font);
+}
 
 QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
                                 const QStringList &process_arguments,
@@ -205,10 +242,35 @@ void MainWindow::select_device(const QString &selected_device) {
     QStringList arguments;
     arguments << "-d" << device;
 
-    QRegularExpression re("Name:([\\s\\S]*)($)");
-    QRegularExpressionMatch match = re.match(run_process(*device_view, arguments));
-    if (match.hasMatch()) {
-      device_view->setPlainText(match.captured(0));
+    QRegularExpression re;
+    re.setPatternOptions(QRegularExpression::MultilineOption);
+    re.setPattern("Name:([\\s\\S]*)($)");
+    QRegularExpressionMatch filter = re.match(run_process(*status_view, arguments));
+
+    QRegularExpressionMatch match;
+    if (filter.hasMatch()) {
+      re.setPattern("(?<=Name: ).*$");
+      match = re.match(filter.captured(0));
+      device_name->setText(match.captured(0));
+      re.setPattern("(?<=Memory: ).*$");
+      match = re.match(filter.captured(0));
+      device_memory->setText(match.captured(0));
+      re.setPattern("(?<=Package: ).*$");
+      match = re.match(filter.captured(0));
+      device_package->setText(match.captured(0));
+      re.setPattern("(?<=Protocol: ).*$");
+      match = re.match(filter.captured(0));
+      device_protocol->setText(match.captured(0));
+      re.setPattern("(?<=Read buffer size: ).*$");
+      match = re.match(filter.captured(0));
+      device_readbuffer->setText(match.captured(0));
+      re.setPattern("(?<=Write buffer size: ).*$");
+      match = re.match(filter.captured(0));
+      device_writebuffer->setText(match.captured(0));
+      re.setPattern(R"((?<=\*\*\*\*).*$)");
+      match = re.match(filter.captured(0));
+      std::cout << match.captured(0).toStdString();
+
       build_default_hex_output();
     }
   }
