@@ -13,18 +13,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   layout->addWidget(groupBox, 0, 0);
 
   auto *groupBox3 = new QGroupBox(tr("Actions"));
-  auto *vbox3 = new QVBoxLayout;
-  vbox3->addWidget(button_blank);
-  connect(button_blank, SIGNAL (released()), this, SLOT (check_blank()));
-  vbox3->addWidget(button_read);
+  auto *vbox3 = new QGridLayout;
+  vbox3->addWidget(button_run_command, 0, 0, 1, 0);
+  connect(button_run_command, SIGNAL (released()), this, SLOT (run_command()));
+  vbox3->addWidget(button_read, 1, 0, 1, 0);
   connect(button_read, SIGNAL (released()), this, SLOT (read_device()));
-  vbox3->addWidget(button_write);
+  vbox3->addWidget(button_write, 2, 0, 1, 0);
   connect(button_write, SIGNAL (released()), this, SLOT (write_device()));
-  vbox3->addWidget(button_erase);
-  connect(button_erase, SIGNAL (released()), this, SLOT (erase_device()));
-  vbox3->addWidget(button_update);
+  vbox3->addWidget(button_update, 3, 0, 1, 0);
   connect(button_update, SIGNAL (released()), this, SLOT (update_firmware()));
-  vbox3->addStretch(1);
+  vbox3->addWidget(no_id_error, 4, 0);
+  vbox3->addWidget(skip_id, 5, 0);
+  vbox3->addWidget(no_size_error, 6, 0);
+  vbox3->addWidget(skip_verify, 7, 0);
+  vbox3->addWidget(pin_check, 4, 1);
+  vbox3->addWidget(blank_check, 5, 1);
+  vbox3->addWidget(erase_device, 6, 1);
+  vbox3->addWidget(hardware_check, 7, 1);
   groupBox3->setLayout(vbox3);
   layout->addWidget(groupBox3, 2, 0);
 
@@ -43,9 +48,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   vbox4->addWidget(device_readbuffer, 1, 3);
   vbox4->addWidget(device_writebuffer_label, 2, 2);
   vbox4->addWidget(device_writebuffer, 2, 3);
-//  vbox4->addWidget(device_other);
-//  vbox4->addWidget(device_view);
-//  vbox4->addStretch(1);
   groupBox4->setLayout(vbox4);
   layout->addWidget(groupBox4, 0, 1);
 
@@ -66,7 +68,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   groupBox6->setLayout(vbox6);
   layout->addWidget(groupBox6, 3, 0, 1, 0);
 
-//  device_view->setReadOnly(true);
   status_view->setReadOnly(true);
 
   disable_buttons();
@@ -91,20 +92,25 @@ void MainWindow::initializer() {
 
   button_programmer = new QComboBox;
 
-  button_blank = new QPushButton("Blank Check");
+  button_run_command = new QPushButton("Run Command");
   button_write = new QPushButton("Write to Device");
   button_read = new QPushButton("Read from Device");
-  button_erase = new QPushButton("Erase Device");
   button_update = new QPushButton("Update Firmware");
 
-  button_device = new QComboBox();
+  no_id_error = new QCheckBox("No ID Error");
+  skip_id = new QCheckBox("Skip ID Check");
+  no_size_error = new QCheckBox("No Size Error");
+  skip_verify = new QCheckBox("Skip Verify");
+  pin_check = new QCheckBox("Pin Check");
+  blank_check = new QCheckBox("Blank Check");
+  erase_device = new QCheckBox("Erase Device");
+  hardware_check = new QCheckBox("Hardware Check");
 
-//  device_view = new QPlainTextEdit(window);
+  button_device = new QComboBox();
 
   device_name_label = new QLabel("Name");
   device_name = new QLineEdit();
   device_name->setReadOnly(true);
-//  device_name->setAlignment(Qt::AlignCenter);
   device_memory_label = new QLabel("Memory");
   device_memory = new QLineEdit();
   device_memory->setReadOnly(true);
@@ -129,7 +135,6 @@ void MainWindow::initializer() {
   monospace_font.setFamily("Courier New");
   monospace_font.setStyleHint(QFont::Monospace);
 
-//  device_view->setFont(monospace_font);
   status_view->setFont(monospace_font);
 }
 
@@ -140,6 +145,9 @@ void MainWindow::run_async_process(const QStringList &process_arguments,
   for (auto const &each : process_arguments) {
     process_arguments_string += each + " ";
   }
+  for (auto const &each : parse_checkboxes()){
+    process_arguments_string += each + " ";
+  }
   status_view->appendPlainText("[Input]: minipro " + process_arguments_string);
   if (type == "stderr") {
     connect(async_process, SIGNAL(readyReadStandardError()), this, SLOT(async_process_err_output()));
@@ -147,9 +155,9 @@ void MainWindow::run_async_process(const QStringList &process_arguments,
     connect(async_process, SIGNAL(readyReadStandardOutput()), this, SLOT(async_process_std_output()));
   }
   connect(async_process,
-          SIGNAL(finished(int,QProcess::ExitStatus)),
+          SIGNAL(finished(int, QProcess::ExitStatus)),
           this,
-          SLOT(read_device_output(int,QProcess::ExitStatus)));
+          SLOT(read_device_output(int, QProcess::ExitStatus)));
 
   status_view->appendPlainText("[Output]: ");
   async_process->start("minipro", process_arguments);
@@ -161,6 +169,19 @@ void MainWindow::async_process_err_output() {
 
 void MainWindow::async_process_std_output() {
   status_view->appendPlainText(async_process->readAllStandardOutput().trimmed().replace("\u001B[K", ""));
+}
+
+QStringList MainWindow::parse_checkboxes() {
+  QStringList arguments;
+  if (no_id_error->isChecked()) arguments.append("--no_id_error");
+  if (skip_id->isChecked()) arguments.append("--skip_id");
+  if (no_size_error->isChecked()) arguments.append("--no_size_error");
+  if (skip_verify->isChecked()) arguments.append("--skip_verify");
+  if (pin_check->isChecked()) arguments.append("--pin_check");
+  if (blank_check->isChecked()) arguments.append("--blank_check");
+  if (erase_device->isChecked()) arguments.append("--erase_device");
+  if (hardware_check->isChecked()) arguments.append("--hardware_check");
+  return arguments;
 }
 
 QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
@@ -236,19 +257,17 @@ void MainWindow::check_for_programmer() {
 
 void MainWindow::disable_buttons() {
   button_device->setDisabled(true);
-  button_blank->setDisabled(true);
+  button_run_command->setDisabled(true);
   button_read->setDisabled(true);
   button_write->setDisabled(true);
-  button_erase->setDisabled(true);
   button_update->setDisabled(true);
 }
 
 void MainWindow::enable_buttons() {
   button_device->setDisabled(false);
-  button_blank->setDisabled(false);
+  button_run_command->setDisabled(false);
   button_read->setDisabled(false);
   button_write->setDisabled(false);
-  button_erase->setDisabled(false);
   button_update->setDisabled(false);
 }
 
@@ -304,9 +323,10 @@ void MainWindow::select_device(const QString &selected_device) {
   }
 }
 
-void MainWindow::check_blank() const {
+void MainWindow::run_command() {
   QStringList arguments;
-  arguments << "-p" << device << "-b";
+  arguments << "-p" << device;
+  arguments.append(parse_checkboxes());
   run_process(*status_view, arguments);
 }
 
@@ -334,11 +354,11 @@ void MainWindow::write_device() {
   }
 }
 
-void MainWindow::erase_device() {
-  QStringList arguments;
-  arguments << "-p" << device << "-E";
-  run_async_process(arguments);
-}
+//void MainWindow::erase_device() {
+//  QStringList arguments;
+//  arguments << "-p" << device << "-E";
+//  run_async_process(arguments);
+//}
 
 void MainWindow::update_firmware() {
   QString fileName = QFileDialog::getOpenFileName(this);

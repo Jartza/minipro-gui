@@ -19,6 +19,7 @@
 #include <QLineEdit>
 #include <QGroupBox>
 #include <QComboBox>
+#include <QCheckBox>
 #include <QHeaderView>
 #include <iostream>
 #include <array>
@@ -36,6 +37,15 @@ class MainWindow : public QMainWindow {
   QDialog device_selector;
   QComboBox *button_programmer;
   QComboBox *button_device;
+
+  QCheckBox *no_id_error;
+  QCheckBox *skip_id;
+  QCheckBox *no_size_error;
+  QCheckBox *skip_verify;
+  QCheckBox *pin_check;
+  QCheckBox *blank_check;
+  QCheckBox *erase_device;
+  QCheckBox *hardware_check;
 
   QPlainTextEdit *status_view;
 
@@ -79,10 +89,9 @@ class MainWindow : public QMainWindow {
   void async_process_std_output();
   void read_device_output(int, QProcess::ExitStatus);
 
-  void check_blank() const;
+  void run_command();
   void read_device();
   void write_device();
-  void erase_device();
   void update_firmware();
 
  private:
@@ -94,16 +103,17 @@ class MainWindow : public QMainWindow {
 
   const QString temp_file_name = "temp.bin";
 
-  QPushButton *button_blank;
+  QPushButton *button_run_command;
   QPushButton *button_write;
   QPushButton *button_read;
-  QPushButton *button_erase;
   QPushButton *button_update;
 
   void initializer();
   void format_hex_table_columns() const;
   void disable_buttons();
   void enable_buttons();
+
+  QStringList parse_checkboxes();
 
 };
 
