@@ -156,11 +156,11 @@ void MainWindow::run_async_process(const QStringList &process_arguments,
 }
 
 void MainWindow::async_process_err_output() {
-  status_view->appendPlainText(async_process->readAllStandardError().trimmed());
+  status_view->appendPlainText(async_process->readAllStandardError().trimmed().replace("\u001B[K", ""));
 }
 
 void MainWindow::async_process_std_output() {
-  status_view->appendPlainText(async_process->readAllStandardOutput().trimmed());
+  status_view->appendPlainText(async_process->readAllStandardOutput().trimmed().replace("\u001B[K", ""));
 }
 
 QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
@@ -186,12 +186,12 @@ QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
     if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
       output = match.captured(1).trimmed();
     }
-    target_plain_text_edit.appendPlainText("[Output]: " + output);
+    target_plain_text_edit.appendPlainText("[Output]: " + output.replace("\u001B[K", ""));
   } else if (type == "stdout") {
     output += process->readAllStandardOutput();
     QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
     if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
-      output = match.captured(1).trimmed();
+      output = match.captured(1).trimmed().replace("\u001B[K", "");
     }
   }
   target_plain_text_edit.ensureCursorVisible();
@@ -299,8 +299,6 @@ void MainWindow::select_device(const QString &selected_device) {
       device_writebuffer->setText(match.captured(0));
       re.setPattern(R"((?<=\*\*\*\*).*$)");
       match = re.match(filter.captured(0));
-      std::cout << match.captured(0).toStdString();
-
       build_default_hex_output();
     }
   }
