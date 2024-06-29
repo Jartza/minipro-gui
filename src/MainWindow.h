@@ -53,7 +53,6 @@ class MainWindow : public QMainWindow {
   QLineEdit *device_writebuffer;
   QLineEdit *device_other;
 
-
   QTableView *hexTableView;
   HexView hexViewModel;
 
