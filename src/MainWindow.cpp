@@ -87,7 +87,8 @@ void MainWindow::initializer() {
   layout = new QGridLayout(window);
 
   window->setWindowTitle("minipro CLI not found!");
-  window->setMinimumSize(1000, 500);
+  window->resize(1060, 480);
+  window->setMinimumSize(800, 480);
 
   minipro_found = false;
   programmer_found = false;
@@ -102,7 +103,7 @@ void MainWindow::initializer() {
   no_id_error = new QCheckBox("Ignore ID Error");
   skip_id = new QCheckBox("Skip ID Check");
   no_size_error = new QCheckBox("Ignore Size Error");
-  skip_verify = new QCheckBox("Skip Verify");
+  skip_verify = new QCheckBox("Skip Verification");
   pin_check = new QCheckBox("Pin Check");
   blank_check = new QCheckBox("Blank Check");
   erase_device = new QCheckBox("Erase Device");
