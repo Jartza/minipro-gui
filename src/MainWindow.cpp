@@ -4,8 +4,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   initializer();
 
   auto *groupBox = new QGroupBox(tr("Targets"));
+  groupBox->setAlignment(Qt::AlignTop);
   auto *vbox = new QGridLayout;
-  vbox->addWidget(button_programmer, 0, 0);
+  vbox->addWidget(button_programmer, 0, 0, Qt::AlignTop);
+  connect(button_programmer, SIGNAL (activated(int)), this, SLOT (check_for_programmer()));
   vbox->addWidget(button_update, 0, 1);
   connect(button_update, SIGNAL (released()), this, SLOT (update_firmware()));
   vbox->addWidget(button_device, 1, 0, 1, 0);
@@ -14,10 +16,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   layout->addWidget(groupBox, 0, 0);
 
   auto *groupBox3 = new QGroupBox(tr("Actions"));
+  groupBox3->setAlignment(Qt::AlignTop);
   auto *vbox3 = new QGridLayout;
-  vbox3->addWidget(pin_check, 0, 0);
+  vbox3->addWidget(pin_check, 0, 0, Qt::AlignTop);
   vbox3->addWidget(blank_check, 0, 1);
-  vbox3->addWidget(erase_device, 1, 0);
+  vbox3->addWidget(erase_device, 1, 0, Qt::AlignTop);
   vbox3->addWidget(hardware_check, 1, 1);
   vbox3->addWidget(button_run_command, 2, 0, 1, 0);
   connect(button_run_command, SIGNAL (released()), this, SLOT (run_command()));
@@ -96,9 +99,9 @@ void MainWindow::initializer() {
   button_read = new QPushButton("Read from Device");
   button_update = new QPushButton("Update Firmware");
 
-  no_id_error = new QCheckBox("No ID Error");
+  no_id_error = new QCheckBox("Ignore ID Error");
   skip_id = new QCheckBox("Skip ID Check");
-  no_size_error = new QCheckBox("No Size Error");
+  no_size_error = new QCheckBox("Ignore Size Error");
   skip_verify = new QCheckBox("Skip Verify");
   pin_check = new QCheckBox("Pin Check");
   blank_check = new QCheckBox("Blank Check");
@@ -160,15 +163,18 @@ void MainWindow::run_async_process(const QStringList &process_arguments,
           SLOT(read_device_output(int, QProcess::ExitStatus)));
 
   status_view->appendPlainText("[Output]: ");
+  status_view->ensureCursorVisible();
   async_process->start("minipro", process_arguments);
 }
 
 void MainWindow::async_process_err_output() {
   status_view->appendPlainText(async_process->readAllStandardError().trimmed().replace("\u001B[K", ""));
+  status_view->ensureCursorVisible();
 }
 
 void MainWindow::async_process_std_output() {
   status_view->appendPlainText(async_process->readAllStandardOutput().trimmed().replace("\u001B[K", ""));
+  status_view->ensureCursorVisible();
 }
 
 QStringList MainWindow::parse_checkboxes() {
@@ -353,12 +359,6 @@ void MainWindow::write_device() {
     run_async_process(arguments);
   }
 }
-
-//void MainWindow::erase_device() {
-//  QStringList arguments;
-//  arguments << "-p" << device << "-E";
-//  run_async_process(arguments);
-//}
 
 void MainWindow::update_firmware() {
   QString fileName = QFileDialog::getOpenFileName(this);
