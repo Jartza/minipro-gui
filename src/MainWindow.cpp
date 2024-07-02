@@ -83,17 +83,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 MainWindow::~MainWindow() = default;
 
 void MainWindow::initializer() {
-  window = new QWidget;
-  layout = new QGridLayout(window);
-
-  window->setWindowTitle("minipro CLI not found!");
-  window->resize(1060, 480);
-  window->setMinimumSize(800, 480);
-
   minipro_found = false;
   programmer_found = false;
 
-  button_programmer = new QComboBox;
+  window = new QWidget;
+  window->setWindowTitle("minipro CLI not found!");
+  window->resize(1000, 600);
+  window->setMinimumSize(800, 480);
+
+  layout = new QGridLayout(window);
+
+  button_programmer = new QComboBox();
 
   button_run_command = new QPushButton("Run Command");
   button_write = new QPushButton("Write to Device");
@@ -129,23 +129,20 @@ void MainWindow::initializer() {
   device_writebuffer_label = new QLabel("Write Buffer");
   device_writebuffer = new QLineEdit();
   device_writebuffer->setReadOnly(true);
-//  device_other = new QLineEdit();
-
 
   hexTableView = new QTableView(window);
   status_view = new QPlainTextEdit(window);
 
   monospace_font.setFamily("Courier New");
   monospace_font.setStyleHint(QFont::Monospace);
-
   status_view->setFont(monospace_font);
 }
 
 void MainWindow::run_async_process(const QStringList &process_arguments,
                                    const QString &type = "stderr") {
-  async_process = new QProcess();
   QString process_arguments_string = "";
-  for (auto const &each : parse_checkboxes()){
+  async_process = new QProcess();
+  for (auto const &each : parse_checkboxes()) {
     process_arguments_string += each + " ";
   }
   for (auto const &each : process_arguments) {
@@ -194,8 +191,8 @@ QStringList MainWindow::parse_checkboxes() {
 QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
                                 const QStringList &process_arguments,
                                 const QString &type = "stderr") {
-  auto *process = new QProcess();
   QString process_arguments_string = "";
+  auto *process = new QProcess();
   for (auto const &each : process_arguments) {
     process_arguments_string += each + " ";
   }

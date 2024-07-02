@@ -82,7 +82,7 @@ class MainWindow : public QMainWindow {
   void check_for_minipro();
 
   explicit MainWindow(QWidget *parent = nullptr);
-  virtual ~MainWindow();
+  ~MainWindow() override;
 
  private slots:
   void check_for_programmer();
@@ -115,7 +115,6 @@ class MainWindow : public QMainWindow {
   void format_hex_table_columns() const;
   void disable_buttons();
   void enable_buttons();
-
   QStringList parse_checkboxes();
 
 };
