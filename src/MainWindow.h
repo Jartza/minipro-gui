@@ -37,9 +37,9 @@ class MainWindow : public QMainWindow {
   QDialog device_selector;
   QComboBox *combobox_programmer;
   QComboBox *combobox_device;
-  QComboBox *vpp;
-  QComboBox *vdd;
-  QComboBox *vcc;
+  [[maybe_unused]] QComboBox *vpp;
+  [[maybe_unused]] QComboBox *vdd;
+  [[maybe_unused]] QComboBox *vcc;
 
   QCheckBox *no_id_error;
   QCheckBox *skip_id;
@@ -64,7 +64,7 @@ class MainWindow : public QMainWindow {
   QLineEdit *device_readbuffer;
   QLabel *device_writebuffer_label;
   QLineEdit *device_writebuffer;
-  QLineEdit *device_other;
+  [[maybe_unused]] QLineEdit *device_other;
 
   QTableView *hexTableView;
   HexView hexViewModel;
@@ -88,8 +88,8 @@ class MainWindow : public QMainWindow {
   void check_for_programmer();
   void get_devices();
   void select_device(const QString & = "");
-  void async_process_err_output();
-  void async_process_std_output();
+  void async_process_err_output() const;
+  void async_process_std_output() const;
   void read_device_output(int, QProcess::ExitStatus);
 
   void run_command();
@@ -115,7 +115,7 @@ class MainWindow : public QMainWindow {
   void format_hex_table_columns() const;
   void disable_buttons();
   void enable_buttons();
-  QStringList parse_checkboxes() const;
+  [[nodiscard]] QStringList parse_checkboxes() const;
 
 };
 

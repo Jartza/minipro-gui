@@ -156,21 +156,21 @@ void MainWindow::run_async_process(QStringList &process_arguments,
     connect(async_process, SIGNAL(readyReadStandardOutput()), this, SLOT(async_process_std_output()));
   }
   connect(async_process,
-          SIGNAL(finished(int, QProcess::ExitStatus)),
+          SIGNAL(finished(int,QProcess::ExitStatus)),
           this,
-          SLOT(read_device_output(int, QProcess::ExitStatus)));
+          SLOT(read_device_output(int,QProcess::ExitStatus)));
 
   status_view->appendPlainText("[Output]: ");
   status_view->ensureCursorVisible();
   async_process->start("minipro", process_arguments);
 }
 
-void MainWindow::async_process_err_output() {
+void MainWindow::async_process_err_output() const {
   status_view->appendPlainText(async_process->readAllStandardError().trimmed().replace("\u001B[K", ""));
   status_view->ensureCursorVisible();
 }
 
-void MainWindow::async_process_std_output() {
+void MainWindow::async_process_std_output() const {
   status_view->appendPlainText(async_process->readAllStandardOutput().trimmed().replace("\u001B[K", ""));
   status_view->ensureCursorVisible();
 }
@@ -191,6 +191,8 @@ QStringList MainWindow::parse_checkboxes() const {
 QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
                                 const QStringList &process_arguments,
                                 const QString &type = "stderr") {
+  QString output = "";
+
   QString process_arguments_string = "";
   auto *process = new QProcess();
   for (auto const &each : process_arguments) {
@@ -198,7 +200,7 @@ QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
   }
   target_plain_text_edit.appendPlainText("[Input]: minipro " + process_arguments_string);
   process->start("minipro", process_arguments);
-  QString output = "";
+
   if (!process->waitForStarted()) {
     output += "Start Error";
   }
@@ -207,14 +209,14 @@ QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
   }
   if (type == "stderr") {
     output += process->readAllStandardError();
-    QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
+    static QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
     if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
       output = match.captured(1).trimmed();
     }
     target_plain_text_edit.appendPlainText("[Output]: " + output.replace("\u001B[K", ""));
   } else if (type == "stdout") {
     output += process->readAllStandardOutput();
-    QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
+    static QRegularExpression re(R"(Serial code:.*\n([\s\S]*))");
     if (QRegularExpressionMatch match = re.match(output); match.hasMatch()) {
       output = match.captured(1).trimmed().replace("\u001B[K", "");
     }
@@ -228,7 +230,7 @@ void MainWindow::check_for_minipro() {
   arguments << "--version";
   auto initial_check_error = run_process(*status_view, arguments);
   if (initial_check_error.length() > 0 && initial_check_error.contains("minipro version")) {
-    QRegularExpression re("minipro version.*\\n");
+    static QRegularExpression re("minipro version.*\\n");
     QRegularExpressionMatch match = re.match(initial_check_error);
     if (match.hasMatch()) {
       window->setWindowTitle(match.captured(0).trimmed());
@@ -242,20 +244,22 @@ void MainWindow::check_for_minipro() {
 }
 
 void MainWindow::check_for_programmer() {
-  QStringList arguments;
-  arguments << "--presence_check";
+  if (minipro_found) {
+    QStringList arguments;
+    arguments << "--presence_check";
 
-  QRegularExpression re("(?<=: ).*$");
-  QRegularExpressionMatch match = re.match(run_process(*status_view, arguments).trimmed());
-  if (match.hasMatch()) {
-    programmer = match.captured(0);
-    programmer_found = true;
-    combobox_programmer->addItem(programmer);
-    enable_buttons();
-  } else {
-    combobox_programmer->setPlaceholderText("No programmer found");
-    programmer_found = false;
-    disable_buttons();
+    static QRegularExpression re("(?<=: ).*$");
+    QRegularExpressionMatch match = re.match(run_process(*status_view, arguments).trimmed());
+    if (match.hasMatch()) {
+      programmer = match.captured(0);
+      programmer_found = true;
+      combobox_programmer->addItem(programmer);
+      enable_buttons();
+    } else {
+      combobox_programmer->setPlaceholderText("No programmer found");
+      programmer_found = false;
+      disable_buttons();
+    }
   }
 }
 
@@ -290,12 +294,12 @@ void MainWindow::get_devices() {
 }
 
 void MainWindow::select_device(const QString &selected_device) {
-  if (selected_device != "") {
+  if (minipro_found && selected_device != "") {
     device = selected_device;
     QStringList arguments;
     arguments << "-d" << device;
 
-    QRegularExpression re;
+    static QRegularExpression re;
     re.setPatternOptions(QRegularExpression::MultilineOption);
     re.setPattern("Name:([\\s\\S]*)($)");
     QRegularExpressionMatch filter = re.match(run_process(*status_view, arguments));
@@ -320,18 +324,18 @@ void MainWindow::select_device(const QString &selected_device) {
       re.setPattern("(?<=Write buffer size: ).*$");
       match = re.match(filter.captured(0));
       device_writebuffer->setText(match.captured(0));
-      re.setPattern(R"((?<=\*\*\*\*).*$)");
-      match = re.match(filter.captured(0));
       build_default_hex_output();
     }
   }
 }
 
 void MainWindow::run_command() {
-  QStringList arguments;
-  arguments << "-p" << device;
-  arguments.append(parse_checkboxes());
-  run_process(*status_view, arguments);
+  if (minipro_found) {
+    QStringList arguments;
+    arguments << "-p" << device;
+    arguments.append(parse_checkboxes());
+    run_process(*status_view, arguments);
+  }
 }
 
 void MainWindow::read_device() {
