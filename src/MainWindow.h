@@ -35,8 +35,8 @@ class MainWindow : public QMainWindow {
   QString device;
 
   QDialog device_selector;
-  QComboBox *button_programmer;
-  QComboBox *button_device;
+  QComboBox *combobox_programmer;
+  QComboBox *combobox_device;
   QComboBox *vpp;
   QComboBox *vdd;
   QComboBox *vcc;
@@ -75,7 +75,7 @@ class MainWindow : public QMainWindow {
   QProcess *async_process;
 
   static QString run_process(QPlainTextEdit &, const QStringList &, const QString &);
-  void run_async_process(const QStringList &, const QString &);
+  void run_async_process(QStringList &, const QString &);
 
   void build_default_hex_output();
   void build_formatted_hex_output();

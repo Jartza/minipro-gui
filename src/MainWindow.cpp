@@ -6,12 +6,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   auto *groupBox = new QGroupBox(tr("Targets"));
   groupBox->setAlignment(Qt::AlignTop);
   auto *vbox = new QGridLayout;
-  vbox->addWidget(button_programmer, 0, 0, Qt::AlignTop);
-  connect(button_programmer, SIGNAL (activated(int)), this, SLOT (check_for_programmer()));
+  vbox->addWidget(combobox_programmer, 0, 0, Qt::AlignTop);
+  connect(combobox_programmer, SIGNAL (highlighted(int)), this, SLOT (check_for_programmer()));
   vbox->addWidget(button_update, 0, 1);
   connect(button_update, SIGNAL (released()), this, SLOT (update_firmware()));
-  vbox->addWidget(button_device, 1, 0, 1, 0);
-  connect(button_device, SIGNAL (currentTextChanged(QString)), this, SLOT (select_device(QString)));
+  vbox->addWidget(combobox_device, 1, 0, 1, 0);
+  connect(combobox_device, SIGNAL (currentTextChanged(QString)), this, SLOT (select_device(QString)));
   groupBox->setLayout(vbox);
   layout->addWidget(groupBox, 0, 0);
 
@@ -93,7 +93,8 @@ void MainWindow::initializer() {
 
   layout = new QGridLayout(window);
 
-  button_programmer = new QComboBox();
+  combobox_programmer = new QComboBox();
+  combobox_device = new QComboBox();
 
   button_run_command = new QPushButton("Run Command");
   button_write = new QPushButton("Write to Device");
@@ -108,8 +109,6 @@ void MainWindow::initializer() {
   blank_check = new QCheckBox("Blank Check");
   erase_device = new QCheckBox("Erase Device");
   hardware_check = new QCheckBox("Hardware Check");
-
-  button_device = new QComboBox();
 
   device_name_label = new QLabel("Name");
   device_name = new QLineEdit();
@@ -138,15 +137,16 @@ void MainWindow::initializer() {
   status_view->setFont(monospace_font);
 }
 
-void MainWindow::run_async_process(const QStringList &process_arguments,
+void MainWindow::run_async_process(QStringList &process_arguments,
                                    const QString &type = "stderr") {
   QString process_arguments_string = "";
   async_process = new QProcess();
-  for (auto const &each : parse_checkboxes()) {
-    process_arguments_string += each + " ";
-  }
   for (auto const &each : process_arguments) {
     process_arguments_string += each + " ";
+  }
+  for (auto const &each : parse_checkboxes()) {
+    process_arguments_string += each + " ";
+    process_arguments.append(each);
   }
 
   status_view->appendPlainText("[Input]: minipro " + process_arguments_string);
@@ -236,7 +236,7 @@ void MainWindow::check_for_minipro() {
       check_for_programmer();
       get_devices();
     } else {
-      button_programmer->setDisabled(true);
+      combobox_programmer->setDisabled(true);
     }
   }
 }
@@ -250,17 +250,17 @@ void MainWindow::check_for_programmer() {
   if (match.hasMatch()) {
     programmer = match.captured(0);
     programmer_found = true;
-    button_programmer->addItem(programmer);
+    combobox_programmer->addItem(programmer);
     enable_buttons();
   } else {
-    button_programmer->setPlaceholderText("No programmer found");
+    combobox_programmer->setPlaceholderText("No programmer found");
     programmer_found = false;
     disable_buttons();
   }
 }
 
 void MainWindow::disable_buttons() {
-  button_device->setDisabled(true);
+  combobox_device->setDisabled(true);
   button_run_command->setDisabled(true);
   button_read->setDisabled(true);
   button_write->setDisabled(true);
@@ -268,7 +268,7 @@ void MainWindow::disable_buttons() {
 }
 
 void MainWindow::enable_buttons() {
-  button_device->setDisabled(false);
+  combobox_device->setDisabled(false);
   button_run_command->setDisabled(false);
   button_read->setDisabled(false);
   button_write->setDisabled(false);
@@ -285,7 +285,7 @@ void MainWindow::get_devices() {
     devices_list.sort();
     devices_list.removeDuplicates();
 
-    button_device->addItems(devices_list);
+    combobox_device->addItems(devices_list);
   }
 }
 
