@@ -115,7 +115,7 @@ class MainWindow : public QMainWindow {
   void format_hex_table_columns() const;
   void disable_buttons();
   void enable_buttons();
-  QStringList parse_checkboxes();
+  QStringList parse_checkboxes() const;
 
 };
 

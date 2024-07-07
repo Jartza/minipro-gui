@@ -175,7 +175,7 @@ void MainWindow::async_process_std_output() {
   status_view->ensureCursorVisible();
 }
 
-QStringList MainWindow::parse_checkboxes() {
+QStringList MainWindow::parse_checkboxes() const {
   QStringList arguments;
   if (no_id_error->isChecked()) arguments.append("--no_id_error");
   if (skip_id->isChecked()) arguments.append("--skip_id");
