@@ -8,8 +8,6 @@
 class HexView : public QAbstractTableModel {
  Q_OBJECT
  public:
-  QFont monospace_font;
-
   explicit HexView(QObject *parent = nullptr);
   int rowCount(const QModelIndex & = QModelIndex()) const override;
   int columnCount(const QModelIndex & = QModelIndex()) const override;
@@ -19,6 +17,7 @@ class HexView : public QAbstractTableModel {
   void buildHexTable(QString);
 
  private:
+  QFont monospace_font;
   QVector<QVector<QString>> table;
 
 };

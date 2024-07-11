@@ -7,11 +7,11 @@ HexView::HexView(QObject *parent) : QAbstractTableModel(parent) {
 }
 
 int HexView::rowCount(const QModelIndex &) const {
-  return table.size();
+  return static_cast<int>(table.size());
 }
 
 int HexView::columnCount(const QModelIndex &) const {
-  return table.at(0).size();
+  return static_cast<int>(table.at(0).size());
 }
 
 QVariant HexView::data(const QModelIndex &index, int role) const {
