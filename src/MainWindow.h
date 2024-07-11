@@ -24,9 +24,13 @@
 
 class MainWindow : public QMainWindow {
  Q_OBJECT
+
  public:
   explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow() override;
+
+  void check_for_minipro();
+  bool minipro_found;
 
  private slots:
   void check_for_programmer();
@@ -71,7 +75,6 @@ class MainWindow : public QMainWindow {
   QLineEdit *device_writebuffer;
   [[maybe_unused]] QLineEdit *device_other;
 
-  bool minipro_found;
   bool programmer_found;
 
   QString programmer;
@@ -109,7 +112,6 @@ class MainWindow : public QMainWindow {
   void run_async_process(QStringList &, const QString &);
   void build_default_hex_output();
   void build_formatted_hex_output();
-  void check_for_minipro();
 };
 
 #endif //MINIPRO_GUI_MAINWINDOW_H
