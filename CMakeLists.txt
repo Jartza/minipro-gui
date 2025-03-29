@@ -26,11 +26,28 @@ file(GLOB CPP_FILES "src/*.cpp")
 file(GLOB INCLUDE "src/include/*.*")
 
 if (APPLE)
+    set(CMAKE_MACOSX_BUNDLE YES)
+
+    set(XCODE_ATTRIBUTE_CODE_SIGN_STYLE "Manual")
+    set(XCODE_ATTRIBUTE_DEVELOPMENT_TEAM "6553V8F734")
+    set(XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "Developer ID Application")
+    set(XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED TRUE)
+
     set(MACOSX_BUNDLE_ICON_FILE AppIcon.icns)
     set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/res/AppIcon.icns")
     set_source_files_properties(${app_icon_macos} PROPERTIES
             MACOSX_PACKAGE_LOCATION "Resources")
     add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${CPP_FILES} ${H_FILES} ${INCLUDE} ${app_icon_macos})
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+            MACOSX_BUNDLE TRUE
+            XCODE_ATTRIBUTE_CODE_SIGN_STYLE ${XCODE_ATTRIBUTE_CODE_SIGN_STYLE}
+            XCODE_ATTRIBUTE_DEVELOPMENT_TEAM ${XCODE_ATTRIBUTE_DEVELOPMENT_TEAM}
+            XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY ${XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY}
+            XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED ${XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED}
+            XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS "--timestamp=http://timestamp.apple.com/ts01  --options=runtime,library"
+            XCODE_ATTRIBUTE_CODE_SIGN_INJECT_BASE_ENTITLEMENTS "NO"
+    )
+
 else ()
     add_executable(${PROJECT_NAME} ${CPP_FILES} ${H_FILES} ${INCLUDE})
 endif()
