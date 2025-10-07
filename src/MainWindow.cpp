@@ -331,14 +331,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *e) {
         edit->setProperty("clearOnFirstClick", false);
       }
     }
-    // When it (re)gains focus, arm the clear-on-first-click again
-    else if (e->type() == QEvent::FocusIn) {
-      edit->setProperty("clearOnFirstClick", true);
-    }
-    // If it loses focus (e.g., user picked an item), arm again for next time
-    else if (e->type() == QEvent::FocusOut) {
-      edit->setProperty("clearOnFirstClick", true);
-    }
   }
   return QMainWindow::eventFilter(obj, e);
 }
@@ -358,7 +350,8 @@ void MainWindow::get_devices() {
     combobox_device->setEditable(true);
     combobox_device->setInsertPolicy(QComboBox::NoInsert);
     combobox_device->setFocusPolicy(Qt::StrongFocus);
-
+    combobox_device->lineEdit()->setClearButtonEnabled(true);
+    
     // make it filterable
     auto *filter_model = new QSortFilterProxyModel(combobox_device);
     filter_model->setFilterCaseSensitivity(Qt::CaseInsensitive);
@@ -376,11 +369,11 @@ void MainWindow::get_devices() {
       }
     );
 
-    connect(combobox_device->lineEdit(),
-      &QLineEdit::selectionChanged,
+    connect(combobox_device,
+      &QComboBox::textActivated,
       combobox_device->lineEdit(), 
       [cb = combobox_device]() {
-        cb->lineEdit()->clear();
+        cb->lineEdit()->setProperty("clearOnFirstClick", true);
       }
     );
 
