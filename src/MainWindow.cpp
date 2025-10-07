@@ -1,4 +1,6 @@
 #include "MainWindow.h"
+#include <QThread>
+#include <QCompleter>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   initializer();
@@ -76,8 +78,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   check_for_minipro();
   build_default_hex_output();
 
-  window->setWindowIcon(QIcon(":/res/AppIcon.png"));
-  window->show();
+  this->setWindowIcon(QIcon(":/res/AppIcon.png"));
+  //window->show();
 }
 
 MainWindow::~MainWindow() = default;
@@ -86,61 +88,100 @@ void MainWindow::initializer() {
   minipro_found = false;
   programmer_found = false;
 
-  window = new QWidget;
-  window->setWindowTitle("minipro CLI not found!");
-  window->resize(1000, 600);
-  window->setMinimumSize(800, 480);
+  setWindowTitle("minipro CLI not found!");
+  resize(1080, 640);
+  setMinimumSize(800, 480);
 
-  layout = new QGridLayout(window);
+  // 1) Central widget + layout (never put a layout on QMainWindow directly)
+  QWidget *central = new QWidget(this);
+  setCentralWidget(central);
 
-  combobox_programmer = new QComboBox();
-  combobox_device = new QComboBox();
+  layout = new QGridLayout(central);  // parent is the central widget
 
-  button_run_command = new QPushButton("Run Command");
-  button_write = new QPushButton("Write to Device");
-  button_read = new QPushButton("Read from Device");
-  button_update = new QPushButton("Update Firmware");
+  // 2) Create controls with correct parents (central or nullptr)
+  combobox_programmer = new QComboBox(central);
+  combobox_device     = new QComboBox(central);
 
-  no_id_error = new QCheckBox("Ignore ID Error");
-  skip_id = new QCheckBox("Skip ID Check");
-  no_size_error = new QCheckBox("Ignore Size Error");
-  skip_verify = new QCheckBox("Skip Verification");
-  pin_check = new QCheckBox("Pin Check");
-  blank_check = new QCheckBox("Blank Check");
-  erase_device = new QCheckBox("Erase Device");
-  hardware_check = new QCheckBox("Hardware Check");
+  button_run_command  = new QPushButton("Run Command", central);
+  button_write        = new QPushButton("Write to Device", central);
+  button_read         = new QPushButton("Read from Device", central);
+  button_update       = new QPushButton("Update Firmware", central);
 
-  device_name_label = new QLabel("Name");
-  device_name = new QLineEdit();
-  device_name->setReadOnly(true);
-  device_memory_label = new QLabel("Memory");
-  device_memory = new QLineEdit();
-  device_memory->setReadOnly(true);
-  device_package_label = new QLabel("Package");
-  device_package = new QLineEdit();
-  device_package->setReadOnly(true);
-  device_protocol_label = new QLabel("Protocol");
-  device_protocol = new QLineEdit();
-  device_protocol->setReadOnly(true);
-  device_readbuffer_label = new QLabel("Read Buffer");
-  device_readbuffer = new QLineEdit();
-  device_readbuffer->setReadOnly(true);
-  device_writebuffer_label = new QLabel("Write Buffer");
-  device_writebuffer = new QLineEdit();
-  device_writebuffer->setReadOnly(true);
+  no_id_error     = new QCheckBox("Ignore ID Error", central);
+  skip_id         = new QCheckBox("Skip ID Check", central);
+  no_size_error   = new QCheckBox("Ignore Size Error", central);
+  skip_verify     = new QCheckBox("Skip Verification", central);
+  pin_check       = new QCheckBox("Pin Check", central);
+  blank_check     = new QCheckBox("Blank Check", central);
+  erase_device    = new QCheckBox("Erase Device", central);
+  hardware_check  = new QCheckBox("Hardware Check", central);
 
-  hexTableView = new QTableView(window);
-  status_view = new QPlainTextEdit(window);
+  device_name_label        = new QLabel("Name", central);
+  device_name              = new QLineEdit(central);  device_name->setReadOnly(true);
+  device_memory_label      = new QLabel("Memory", central);
+  device_memory            = new QLineEdit(central);  device_memory->setReadOnly(true);
+  device_package_label     = new QLabel("Package", central);
+  device_package           = new QLineEdit(central);  device_package->setReadOnly(true);
+  device_protocol_label    = new QLabel("Protocol", central);
+  device_protocol          = new QLineEdit(central);  device_protocol->setReadOnly(true);
+  device_readbuffer_label  = new QLabel("Read Buffer", central);
+  device_readbuffer        = new QLineEdit(central);  device_readbuffer->setReadOnly(true);
+  device_writebuffer_label = new QLabel("Write Buffer", central);
+  device_writebuffer       = new QLineEdit(central);  device_writebuffer->setReadOnly(true);
+
+  hexTableView = new QTableView(central);
+  status_view  = new QPlainTextEdit(central);
 
   monospace_font.setFamily("Courier New");
   monospace_font.setStyleHint(QFont::Monospace);
   status_view->setFont(monospace_font);
+
+  // 3) Hook up your hex model (the memory-light one)
+  hexTableView->setModel(&hexViewModel);
+
+  // 4) Add widgets to the grid (example layout – adjust as you like)
+  int r = 0;
+  layout->addWidget(combobox_programmer, r, 0);
+  layout->addWidget(combobox_device,     r, 1);
+  layout->addWidget(button_run_command,  r, 2);
+  layout->addWidget(button_write,        r, 3);
+  layout->addWidget(button_read,         r, 4);
+  layout->addWidget(button_update,       r, 5);
+  r++;
+
+  // flags row (pack as you prefer)
+  layout->addWidget(no_id_error,   r, 0);
+  layout->addWidget(skip_id,       r, 1);
+  layout->addWidget(no_size_error, r, 2);
+  layout->addWidget(skip_verify,   r, 3);
+  layout->addWidget(pin_check,     r, 4);
+  layout->addWidget(blank_check,   r, 5);
+  layout->addWidget(erase_device,  r, 6);
+  layout->addWidget(hardware_check,r, 7);
+  r++;
+
+  // device info (example)
+  layout->addWidget(device_name_label,   r, 0); layout->addWidget(device_name,   r, 1);
+  layout->addWidget(device_memory_label, r, 2); layout->addWidget(device_memory, r, 3);
+  layout->addWidget(device_package_label,r, 4); layout->addWidget(device_package,r, 5);
+  r++;
+  layout->addWidget(device_protocol_label,   r, 0); layout->addWidget(device_protocol,   r, 1);
+  layout->addWidget(device_readbuffer_label, r, 2); layout->addWidget(device_readbuffer, r, 3);
+  layout->addWidget(device_writebuffer_label,r, 4); layout->addWidget(device_writebuffer,r, 5);
+  r++;
+
+  // main views
+  layout->addWidget(hexTableView, r, 0, 1, 6);
+  r++;
+  layout->addWidget(status_view,  r, 0, 1, 6);
 }
 
 void MainWindow::run_async_process(QStringList &process_arguments,
                                    const QString &type = "stderr") {
+  if (!status_view) return; // safety
+                                    
   QString process_arguments_string = "";
-  async_process = new QProcess();
+  async_process = new QProcess(this);
   for (auto const &each : process_arguments) {
     process_arguments_string += each + " ";
   }
@@ -165,12 +206,12 @@ void MainWindow::run_async_process(QStringList &process_arguments,
   async_process->start("minipro", process_arguments);
 }
 
-void MainWindow::async_process_err_output() const {
+void MainWindow::async_process_err_output() {
   status_view->appendPlainText(async_process->readAllStandardError().trimmed().replace("\u001B[K", ""));
   status_view->ensureCursorVisible();
 }
 
-void MainWindow::async_process_std_output() const {
+void MainWindow::async_process_std_output() {
   status_view->appendPlainText(async_process->readAllStandardOutput().trimmed().replace("\u001B[K", ""));
   status_view->ensureCursorVisible();
 }
@@ -194,7 +235,7 @@ QString MainWindow::run_process(QPlainTextEdit &target_plain_text_edit,
   QString output = "";
 
   QString process_arguments_string = "";
-  auto *process = new QProcess();
+  auto *process = new QProcess(this);
   for (auto const &each : process_arguments) {
     process_arguments_string += each + " ";
   }
@@ -233,7 +274,7 @@ void MainWindow::check_for_minipro() {
     static QRegularExpression re("minipro version.*\\n");
     QRegularExpressionMatch match = re.match(initial_check_error);
     if (match.hasMatch()) {
-      window->setWindowTitle(match.captured(0).trimmed());
+      setWindowTitle(match.captured(0).trimmed());
       minipro_found = true;
       check_for_programmer();
       get_devices();
@@ -290,6 +331,33 @@ void MainWindow::get_devices() {
     devices_list.removeDuplicates();
 
     combobox_device->addItems(devices_list);
+
+    combobox_device->setEditable(true);
+    combobox_device->setInsertPolicy(QComboBox::NoInsert);
+    combobox_device->setFocusPolicy(Qt::StrongFocus);
+
+    // make it filterable
+    auto *filter_model = new QSortFilterProxyModel(combobox_device);
+    filter_model->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    filter_model->setSourceModel(combobox_device->model());
+    
+    auto *completer = new QCompleter(filter_model, combobox_device);
+    completer->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
+    combobox_device->setCompleter(completer);
+
+    connect(combobox_device->lineEdit(),
+      &QLineEdit::textEdited,
+      this,
+      [this, filter_model](const QString &text) {
+        filter_model->setFilterFixedString(text);
+    });
+
+    connect(combobox_device->lineEdit(),
+      &QLineEdit::selectionChanged,
+      combobox_device->lineEdit(), 
+      [cb = combobox_device]() {
+        cb->lineEdit()->clear();
+      });
   }
 }
 
@@ -363,7 +431,8 @@ void MainWindow::write_device() {
 }
 
 void MainWindow::update_firmware() {
-  QString fileName = QFileDialog::getOpenFileName(this);
+  printf ("Update firmware\n");
+  QString fileName = QFileDialog::getOpenFileName(nullptr, tr("Open Firmware File"));
   if (fileName != "") {
     QStringList arguments;
     arguments << "-p" << device << "-F" << fileName;
@@ -393,10 +462,10 @@ void MainWindow::build_formatted_hex_output() {
 
 void MainWindow::format_hex_table_columns() const {
   hexTableView->horizontalHeader()->setStretchLastSection(true);
-  for (int n = 0; n <= hexViewModel.columnCount(); n++) {
+  for (int n = 0; n < hexViewModel.columnCount(); n++) {
     hexTableView->resizeColumnToContents(n);
   }
-  for (int n = 0; n <= hexViewModel.rowCount(); n++) {
+  for (int n = 0; n < hexViewModel.rowCount(); n++) {
     hexTableView->resizeRowToContents(n);
   }
 }

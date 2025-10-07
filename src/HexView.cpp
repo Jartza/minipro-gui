@@ -1,116 +1,107 @@
+// HexView.cpp
 #include "HexView.h"
+#include <QStringView>
+
+static constexpr int kBytesPerRow = 16;
+static constexpr int kAsciiCol    = 16; // 0..15 hex, 16 = ASCII
 
 HexView::HexView(QObject *parent) : QAbstractTableModel(parent) {
-  clearHexTable();
-  monospace_font.setFamily("Courier New");
-  monospace_font.setStyleHint(QFont::Monospace);
+    m_mono.setFamily("Courier New");    // or "Monaco" on macOS; Qt will substitute if missing
+    m_mono.setStyleHint(QFont::Monospace);
 }
 
 int HexView::rowCount(const QModelIndex &) const {
-  return static_cast<int>(table.size());
+    if (m_bytes.isEmpty()) return 0;
+    return (m_bytes.size() + kBytesPerRow - 1) / kBytesPerRow;
 }
 
 int HexView::columnCount(const QModelIndex &) const {
-  return static_cast<int>(table.at(0).size());
+    return kBytesPerRow + 1; // 16 hex bytes + ASCII strip
 }
 
 QVariant HexView::data(const QModelIndex &index, int role) const {
-  switch (role) {
-    case Qt::DisplayRole: {
-      return table.at(index.row()).at(index.column());
-    }
-    case Qt::TextAlignmentRole: {
-      return Qt::AlignCenter;
-    }
-    case Qt::FontRole: {
-      return monospace_font;
-    }
-    default:break;
-  }
+    if (!index.isValid()) return {};
 
-  return QVariant();
+    const int row = index.row();
+    const int col = index.column();
+
+    switch (role) {
+    case Qt::FontRole:
+        return m_mono;
+
+    case Qt::TextAlignmentRole:
+        return col == kAsciiCol ? QVariant{Qt::AlignLeft | Qt::AlignVCenter}
+                                : QVariant{Qt::AlignCenter};
+
+    case Qt::DisplayRole: {
+        const int start = row * kBytesPerRow;
+        if (col == kAsciiCol) {
+            // ASCII strip for the whole row
+            QString ascii;
+            ascii.reserve(kBytesPerRow);
+            for (int i = 0; i < kBytesPerRow; ++i) {
+                const int idx = start + i;
+                if (idx >= m_bytes.size()) break;
+                unsigned char c = static_cast<unsigned char>(m_bytes[idx]);
+                if (c < 32 || c > 126) c = '.';
+                ascii.append(QChar(c));
+            }
+            return ascii;
+        } else {
+            const int idx = start + col;
+            if (idx >= m_bytes.size()) return QVariant{};
+            unsigned char b = static_cast<unsigned char>(m_bytes[idx]);
+            // fast 2-char hex without allocations beyond the QString result
+            return QString::asprintf("%02X", b);
+        }
+    }
+    default:
+        return {};
+    }
 }
 
-QVariant HexView::headerData(int section, Qt::Orientation orientation, int role) const {
-  if (role != Qt::DisplayRole) {
-    return QVariant();
-  }
-  if (orientation == Qt::Horizontal) {
-    switch (section) {
-      case 0:return "00";
-      case 1:return "01";
-      case 2:return "02";
-      case 3:return "03";
-      case 4:return "04";
-      case 5:return "05";
-      case 6:return "06";
-      case 7:return "07";
-      case 8:return "08";
-      case 9:return "09";
-      case 10:return "0A";
-      case 11:return "0B";
-      case 12:return "0C";
-      case 13:return "0D";
-      case 14:return "0E";
-      case 15:return "0F";
-      case 16:return "ASCII";
-      default:break;
+QVariant HexView::headerData(int section, Qt::Orientation o, int role) const {
+    if (role != Qt::DisplayRole) return {};
+    if (o == Qt::Horizontal) {
+        if (section < kBytesPerRow) return QString::asprintf("%02X", section);
+        if (section == kAsciiCol)   return "ASCII";
+        return {};
+    } else {
+        // Show byte offset at row start
+        const int offset = section * kBytesPerRow;
+        return QString::asprintf("%08X", offset);
     }
-  }
-  if (orientation == Qt::Vertical) {
-    return QVariant::fromValue(section + 1);
-  }
-  return QVariant();
+}
+
+Qt::ItemFlags HexView::flags(const QModelIndex &index) const {
+    Q_UNUSED(index);
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+}
+
+void HexView::setBytes(QByteArray bytes) {
+    beginResetModel();
+    m_bytes = std::move(bytes);
+    endResetModel();
+}
+
+void HexView::clear() {
+    beginResetModel();
+    m_bytes.clear();
+    endResetModel();
+}
+
+// HexView.cpp (add at end)
+
+void HexView::buildHexTable(const QByteArray &bytes) {
+    setBytes(bytes);
+}
+
+void HexView::buildHexTable(const QString &hexText) {
+    // Accept either plain hex or hex with spaces/newlines; QByteArray::fromHex ignores whitespace.
+    QByteArray ba = QByteArray::fromHex(hexText.toUtf8());
+    setBytes(std::move(ba));
 }
 
 void HexView::clearHexTable() {
-  beginResetModel();
-  table.clear();
-  const int number_of_rows = 8;
-  // Create 8 lines of blank data to display
-  for (int i = 0; i < number_of_rows; i++) {
-    table.append({"--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--",
-                  "................"});
-  }
-  endResetModel();
-}
-
-void HexView::buildHexTable(QString temp_file_content) {
-  beginResetModel();
-  table.clear();
-
-  QString ascii_string_line;
-  QVector<QVector<QString>> new_hex_table;
-
-  const int chars_per_line = 32; // (16 bytes * 2)
-  QVector<QString> next_row;
-
-  for (int i = 0; i <= temp_file_content.length(); i++) {
-
-    // Parse out 1-byte hex values, and convert to ASCII
-    if (i % 2 != 0) {
-      QString byte_string = QChar(temp_file_content[i - 1]);
-      byte_string += QChar(temp_file_content[i]);
-
-      next_row.append(byte_string.toUpper());
-
-      auto ascii_int = byte_string.toUInt(nullptr, 16);
-      // Non-extended ASCII only
-      if (ascii_int > 126) ascii_int = 46;
-      auto ascii_char = QChar(ascii_int);
-      // Printable characters only
-      if (!ascii_char.isPrint() || ascii_char.isNull()) {
-        ascii_char = '.';
-      }
-      ascii_string_line += ascii_char;
-    }
-    // Add ASCII character translation, and move on to next 16-byte line
-    if (i != 0 && i % chars_per_line == 0) {
-      next_row.append(ascii_string_line);
-      new_hex_table.append(next_row);
-      ascii_string_line.clear();
-    }
-  }
-  table = new_hex_table;
-  endResetModel();
+    clear();
 }

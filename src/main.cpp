@@ -8,7 +8,10 @@ int main(int argc, char *argv[]) {
   QCoreApplication::setOrganizationDomain("twelve-chairs");
   QCoreApplication::setApplicationName("minipro-gui");
 
+  application.setAttribute(Qt::AA_DontUseNativeDialogs);
+
   MainWindow window;
+  window.show();
 
   return application.exec();
 }

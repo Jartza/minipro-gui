@@ -18,6 +18,10 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QHeaderView>
+#include <QStringListModel>
+#include <QSortFilterProxyModel>
+#include <QCompleter>
+#include <QLineEdit>
 #include <iostream>
 #include <array>
 #include "HexView.h"
@@ -36,8 +40,8 @@ class MainWindow : public QMainWindow {
   void check_for_programmer();
   void get_devices();
   void select_device(const QString & = "");
-  void async_process_err_output() const;
-  void async_process_std_output() const;
+  void async_process_err_output();
+  void async_process_std_output();
   void read_device_output(int, QProcess::ExitStatus);
 
   void run_command();
@@ -108,7 +112,7 @@ class MainWindow : public QMainWindow {
   void disable_buttons();
   void enable_buttons();
   [[nodiscard]] QStringList parse_checkboxes() const;
-  static QString run_process(QPlainTextEdit &, const QStringList &, const QString &);
+  QString run_process(QPlainTextEdit &, const QStringList &, const QString &);
   void run_async_process(QStringList &, const QString &);
   void build_default_hex_output();
   void build_formatted_hex_output();
