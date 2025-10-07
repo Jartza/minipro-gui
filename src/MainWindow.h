@@ -29,6 +29,9 @@
 class MainWindow : public QMainWindow {
  Q_OBJECT
 
+ protected:
+  bool eventFilter(QObject *obj, QEvent *event) override;
+
  public:
   explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow() override;

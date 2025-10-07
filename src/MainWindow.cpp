@@ -89,7 +89,7 @@ void MainWindow::initializer() {
   programmer_found = false;
 
   setWindowTitle("minipro CLI not found!");
-  resize(1080, 640);
+  resize(1280, 960);
   setMinimumSize(800, 480);
 
   // 1) Central widget + layout (never put a layout on QMainWindow directly)
@@ -320,6 +320,29 @@ void MainWindow::enable_buttons() {
   button_update->setDisabled(false);
 }
 
+bool MainWindow::eventFilter(QObject *obj, QEvent *e) {
+  if (obj == combobox_device->lineEdit()) {
+    auto *edit = combobox_device->lineEdit();
+
+    // First click inside the edit clears it
+    if (e->type() == QEvent::MouseButtonPress) {
+      if (edit->property("clearOnFirstClick").toBool()) {
+        edit->clear();
+        edit->setProperty("clearOnFirstClick", false);
+      }
+    }
+    // When it (re)gains focus, arm the clear-on-first-click again
+    else if (e->type() == QEvent::FocusIn) {
+      edit->setProperty("clearOnFirstClick", true);
+    }
+    // If it loses focus (e.g., user picked an item), arm again for next time
+    else if (e->type() == QEvent::FocusOut) {
+      edit->setProperty("clearOnFirstClick", true);
+    }
+  }
+  return QMainWindow::eventFilter(obj, e);
+}
+
 void MainWindow::get_devices() {
   if (programmer_found) {
     QStringList arguments;
@@ -350,14 +373,19 @@ void MainWindow::get_devices() {
       this,
       [this, filter_model](const QString &text) {
         filter_model->setFilterFixedString(text);
-    });
+      }
+    );
 
     connect(combobox_device->lineEdit(),
       &QLineEdit::selectionChanged,
       combobox_device->lineEdit(), 
       [cb = combobox_device]() {
         cb->lineEdit()->clear();
-      });
+      }
+    );
+
+    combobox_device->lineEdit()->installEventFilter(this);
+    combobox_device->lineEdit()->setProperty("clearOnFirstClick", true);
   }
 }
 
