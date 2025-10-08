@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   hexTableView->setModel(&hexViewModel);
   hexTableView->show();
   vbox5->addWidget(hexTableView);
-  vbox5->addStretch(1);
+  //vbox5->addStretch(1);
   groupBox5->setLayout(vbox5);
   layout->addWidget(groupBox5, 2, 1);
 
@@ -351,7 +351,7 @@ void MainWindow::get_devices() {
     combobox_device->setInsertPolicy(QComboBox::NoInsert);
     combobox_device->setFocusPolicy(Qt::StrongFocus);
     combobox_device->lineEdit()->setClearButtonEnabled(true);
-    
+
     // make it filterable
     auto *filter_model = new QSortFilterProxyModel(combobox_device);
     filter_model->setFilterCaseSensitivity(Qt::CaseInsensitive);
